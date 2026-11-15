@@ -81,7 +81,7 @@ export default function Loja() {
     }
 
     return result;
-  }, [category, search, sort, maxPrice]);
+  }, [products, category, search, sort, maxPrice]);
 
   function clearFilters() {
     setCategory('Todos');

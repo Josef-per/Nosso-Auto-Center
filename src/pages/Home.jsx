@@ -1,46 +1,43 @@
 import "../css/global.css"
-
+import { useEffect, useState } from 'react';
+import { listarProdutos } from '../services/produtoService';
 
 export default function Home() {
 
-  const products = [
-    {
-      id: 1,
-      name: 'Óleo de motor sintético 5W30 · 1L',
-      category: 'Óleos e fluidos',
-      price: 54.9,
-      image:
-        'https://images.unsplash.com/photo-1635784063388-647d0f6d2a30?w=650&fit=crop',
-      badge: 'MAIS VENDIDO',
-    },
-    {
-      id: 2,
-      name: 'Kit pastilha de freio dianteiro',
-      category: 'Freios',
-      price: 149.9,
-      image:
-        'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=650&fit=crop',
-      badge: 'OFERTA',
-    },
-    {
-      id: 3,
-      name: 'Filtro de óleo para motor',
-      category: 'Motor e filtros',
-      price: 38.5,
-      image:
-        'https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?w=650&fit=crop',
-      badge: 'NOVO',
-    },
-    {
-      id: 4,
-      name: 'Pneu aro 15 · 195/55 R15',
-      category: 'Pneus e rodas',
-      price: 329.9,
-      image:
-        'https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=650&fit=crop',
-      badge: '-15%',
-    },
-  ];
+  
+const [products, setProducts] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState('');
+
+useEffect(() => {
+  let ativo = true;
+
+  async function carregarProdutos() {
+    try {
+      const dados = await listarProdutos();
+
+      if (ativo) {
+        setProducts(dados.slice(0, 4));
+      }
+    } catch (erro) {
+      if (ativo) {
+        console.error('Erro ao carregar destaques:', erro);
+        setError(erro.message);
+      }
+    } finally {
+      if (ativo) {
+        setLoading(false);
+      }
+    }
+  }
+
+  carregarProdutos();
+
+  return () => {
+    ativo = false;
+  };
+}, []);
+
 
   const money = (value) =>
     value.toLocaleString('pt-BR', {
@@ -176,7 +173,15 @@ export default function Home() {
           </div>
 
           <div className="products">
-            {products.map((product) => (
+            {loading ? (
+              <p>Carregando produtos...</p>
+            ) : error ? (
+              <p role="alert">
+                Erro ao carregar produtos: {error}
+              </p>
+            ) : products.length === 0 ? (
+              <p>Nenhum produto disponível no momento.</p>
+            ) : products.map((product) => (
               <article className="product" key={product.id}>
                 <div className="product-img">
                   <img src={product.image} alt={product.name} />

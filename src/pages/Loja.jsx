@@ -1,93 +1,46 @@
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { listarProdutos } from '../services/produtoService';
 import { Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 
 
 export default function Loja() {
 
-  const products = [
-    {
-      id: 1,
-      name: 'Pastilha de freio dianteira',
-      category: 'Freios',
-      price: 89.9,
-      oldPrice: 119.9,
-      brand: 'Bosch',
-      badge: 'OFERTA',
-      image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600',
-    },
-    {
-      id: 2,
-      name: 'Óleo sintético 5W30',
-      category: 'Óleos e fluidos',
-      price: 49.9,
-      oldPrice: 0,
-      brand: 'Mobil',
-      badge: 'POPULAR',
-      image: 'https://images.unsplash.com/photo-1635784063382-7d2e2f6b4e8d?w=600',
-    },
-    {
-      id: 3,
-      name: 'Filtro de óleo automotivo',
-      category: 'Motor e filtros',
-      price: 34.9,
-      oldPrice: 45.9,
-      brand: 'Tecfil',
-      badge: 'NOVO',
-      image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600',
-    },
-    {
-      id: 4,
-      name: 'Pneu aro 15 · 195/55 R15',
-      category: 'Pneus e rodas',
-      price: 329.9,
-      oldPrice: 389.9,
-      brand: 'Goodyear',
-      badge: '-15%',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600',
-    },
-    {
-      id: 5,
-      name: 'Bateria automotiva 60Ah',
-      category: 'Elétrica',
-      price: 419.9,
-      oldPrice: 0,
-      brand: 'Moura',
-      badge: 'GARANTIA',
-      image: 'https://images.unsplash.com/photo-1609592424848-7e6b3e2d5a2e?w=600',
-    },
-    {
-      id: 6,
-      name: 'Farol de LED premium H7',
-      category: 'Iluminação',
-      price: 119.9,
-      oldPrice: 159.9,
-      brand: 'Philips',
-      badge: 'OFERTA',
-      image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600',
-    },
-    {
-      id: 7,
-      name: 'Jogo de discos de freio ventilados',
-      category: 'Freios',
-      price: 269.9,
-      oldPrice: 0,
-      brand: 'Bosch',
-      badge: 'POPULAR',
-      image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600',
-    },
-    {
-      id: 8,
-      name: 'Kit de filtros para revisão',
-      category: 'Motor e filtros',
-      price: 89.9,
-      oldPrice: 115,
-      brand: 'Tecfil',
-      badge: 'KIT',
-      image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600',
-    },
-  ];
+  
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let ativo = true;
+
+    async function carregarProdutos() {
+      try {
+        const dados = await listarProdutos();
+
+        if (ativo) {
+          setProducts(dados);
+        }
+      } catch (erro) {
+        if (ativo) {
+          console.error('Erro ao carregar produtos:', erro);
+          setError(erro.message);
+        }
+      } finally {
+        if (ativo) {
+          setLoading(false);
+        }
+      }
+    }
+
+    carregarProdutos();
+
+    return () => {
+      ativo = false;
+    };
+  }, []);
+
 
   const money = (value) =>
     value.toLocaleString('pt-BR', {
@@ -238,7 +191,16 @@ export default function Loja() {
               </div>
             </div>
 
-            {filteredProducts.length > 0 ? (
+            {loading ? (
+              <div className="empty">
+                <p>Carregando produtos...</p>
+              </div>
+            ) : error ? (
+              <div className="empty" role="alert">
+                <h2>Erro ao carregar produtos</h2>
+                <p>{error}</p>
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="products">
                 {filteredProducts.map((product) => (
                   <article className="product" key={product.id}>

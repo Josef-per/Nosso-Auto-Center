@@ -1,3 +1,5 @@
+import { aplicarMetadados } from '../seo/metadados';
+import ProductImage from '../components/ProductImage';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { quantidadeDoProduto, useCarrinho } from '../carrinho/useCarrinho';
@@ -15,7 +17,7 @@ function Detalhes({ produto }) {
   return (
     <article className="detail-layout product-detail">
       <div className="detail-photo">
-        <img src={produto.image} alt={produto.name} />
+        <ProductImage src={produto.image} alt={produto.name} eager />
       </div>
       <div className="details">
         <p className="eyebrow">{produto.category}</p>
@@ -56,6 +58,10 @@ function ConsultaProduto({ id }) {
     return () => { ativo = false; };
   }, [id, tentativa]);
 
+  useEffect(() => {
+    if (resultado?.produto) aplicarMetadados({ titulo: resultado.produto.name + ' | Nosso Auto Center', descricao: (resultado.produto.description || 'Consulte preço e disponibilidade de ' + resultado.produto.name + ' no Nosso Auto Center.').slice(0, 180), indexavel: true });
+    else if (resultado) aplicarMetadados({ titulo: resultado.erro ? 'Produto indisponível | Nosso Auto Center' : 'Produto não encontrado | Nosso Auto Center', descricao: 'Explore as autopeças disponíveis no catálogo do Nosso Auto Center.', indexavel: false });
+  }, [resultado]);
   return (
     <div className="container product-page">
       <Link className="account-link" to="/loja">← Voltar para a Loja</Link>

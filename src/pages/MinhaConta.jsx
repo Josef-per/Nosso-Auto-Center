@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { LogOut } from 'lucide-react';
 import { useSessao } from '../auth/useSessao';
@@ -128,6 +129,7 @@ export default function MinhaConta() {
       </div>
       <div className="account-layout">
         <div className="side-menu account-menu">
+          <Link className="account-link admin-entry" to="/admin">Área administrativa</Link>
           <button type="button" onClick={encerrarSessao} disabled={saindo}>
             <LogOut size={18} aria-hidden="true" />
             {saindo ? 'Saindo…' : 'Sair da conta'}

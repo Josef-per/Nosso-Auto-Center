@@ -1,3 +1,4 @@
+import PaymentSummary from './PaymentSummary';
 import { Link, useLocation } from 'react-router-dom';
 import { formatarPreco } from '../lib/formatarPreco';
 import { useConsultaPedidos } from '../pedidos/useConsultaPedidos';
@@ -34,8 +35,9 @@ export default function MeusPedidos({ usuarioId }) {
                 </small>
               </div>
               <div className="pedido-meta">
-                <StatusPedido status={pedido.status} />
+                <span>Atendimento: <StatusPedido status={pedido.status} /></span>
                 <strong>{formatarPreco(Number(pedido.total))}</strong>
+                <PaymentSummary method={pedido.metodo_pagamento} status={pedido.status_pagamento} />
               </div>
             </li>
           ))}

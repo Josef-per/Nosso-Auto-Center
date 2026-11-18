@@ -1,53 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import AdicionarAoCarrinho from '../components/AdicionarAoCarrinho';
-import { listarProdutos } from '../services/produtoService';
+import { CircleDot, Cog, Droplets, ShieldCheck, Truck, Wrench, BadgeCheck } from 'lucide-react';
+import { useCatalogo } from '../catalogo/useCatalogo';
+import ProductGrid from '../components/ProductGrid';
+import CategoryCard from '../components/CategoryCard';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
+import EmptyState from '../components/EmptyState';
 
 export default function Home() {
-
-  
-const [products, setProducts] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState('');
-
-useEffect(() => {
-  let ativo = true;
-
-  async function carregarProdutos() {
-    try {
-      const dados = await listarProdutos();
-
-      if (ativo) {
-        setProducts(dados.slice(0, 4));
-      }
-    } catch (erro) {
-      if (ativo) {
-        console.error('Erro ao carregar destaques:', erro);
-        setError(erro.message);
-      }
-    } finally {
-      if (ativo) {
-        setLoading(false);
-      }
-    }
-  }
-
-  carregarProdutos();
-
-  return () => {
-    ativo = false;
-  };
-}, []);
-
-
-  const money = (value) =>
-    value.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    });
-
-
-
+  const { products, loading, error, retry } = useCatalogo();
   return (
     <>
       {/* Banner principal */}
@@ -84,7 +45,7 @@ useEffect(() => {
         {/* Benefícios */}
         <div className="benefits">
           <div className="benefit">
-            <div className="benefit-icon">♧</div>
+            <ShieldCheck className="benefit-icon" aria-hidden="true" />
             <div>
               <b>Compra segura</b>
               <small>Sua tranquilidade em primeiro lugar</small>
@@ -92,7 +53,7 @@ useEffect(() => {
           </div>
 
           <div className="benefit">
-            <div className="benefit-icon">♧</div>
+            <Truck className="benefit-icon" aria-hidden="true" />
             <div>
               <b>Entrega em todo o Brasil</b>
               <small>Consulte seu CEP</small>
@@ -100,7 +61,7 @@ useEffect(() => {
           </div>
 
           <div className="benefit">
-            <div className="benefit-icon">✦</div>
+            <BadgeCheck className="benefit-icon" aria-hidden="true" />
             <div>
               <b>Peças selecionadas</b>
               <small>Qualidade e confiança</small>
@@ -108,7 +69,7 @@ useEffect(() => {
           </div>
 
           <div className="benefit">
-            <div className="benefit-icon">⚒</div>
+            <Wrench className="benefit-icon" aria-hidden="true" />
             <div>
               <b>Suporte especializado</b>
               <small>Conte com nossa equipe</small>
@@ -127,35 +88,16 @@ useEffect(() => {
               </p>
             </div>
 
-            <a href="/loja" className="subtlelink">
+            <Link to="/loja" className="subtlelink">
               Todas as categorias →
-            </a>
+            </Link>
           </div>
 
           <div className="categories">
-            <a href="/loja" className="cat">
-              <strong>Freios</strong>
-              <small>Segurança na medida</small>
-              <div className="huge">◉</div>
-            </a>
-
-            <a href="/loja" className="cat">
-              <strong>Motor e filtros</strong>
-              <small>Cuide do coração do carro</small>
-              <div className="huge">⚙</div>
-            </a>
-
-            <a href="/loja" className="cat">
-              <strong>Pneus e rodas</strong>
-              <small>Adesão em cada curva</small>
-              <div className="huge">◍</div>
-            </a>
-
-            <a href="/loja" className="cat">
-              <strong>Óleos e fluidos</strong>
-              <small>Proteção em movimento</small>
-              <div className="huge">◈</div>
-            </a>
+            <CategoryCard title="Freios" description="Segurança na medida" icon={<CircleDot size={42} />} />
+            <CategoryCard title="Motor e filtros" description="Cuide do coração do carro" icon={<Cog size={42} />} />
+            <CategoryCard title="Pneus e rodas" description="Adesão em cada curva" icon={<CircleDot size={42} />} />
+            <CategoryCard title="Óleos e fluidos" description="Proteção em movimento" icon={<Droplets size={42} />} />
           </div>
         </section>
 
@@ -165,55 +107,17 @@ useEffect(() => {
             <div>
               <div className="eyebrow">ESCOLHAS PARA VOCÊ</div>
               <h2>Produtos em destaque</h2>
-              <p>Os favoritos de quem entende de carro.</p>
+              <p>Uma seleção do nosso catálogo para o seu veículo.</p>
             </div>
 
-            <a href="/loja" className="subtlelink">
+            <Link to="/loja" className="subtlelink">
               Ver todos →
-            </a>
+            </Link>
           </div>
 
-          <div className="products">
-            {loading ? (
-              <p>Carregando produtos...</p>
-            ) : error ? (
-              <p role="alert">
-                Erro ao carregar produtos: {error}
-              </p>
-            ) : products.length === 0 ? (
-              <p>Nenhum produto disponível no momento.</p>
-            ) : products.map((product) => (
-              <article className="product" key={product.id}>
-                <div className="product-img">
-                  <Link to={`/produto/${product.id}`}>
-                    <img src={product.image} alt={product.name} />
-                  </Link>
-
-                  <span className="tag">{product.badge}</span>
-                </div>
-
-                <div className="product-body">
-                  <small>{product.category}</small>
-
-                  <h3><Link to={`/produto/${product.id}`}>{product.name}</Link></h3>
-
-                  <div className="rating">
-                    ★★★★★ <span style={{ color: 'var(--muted)' }}>(4,8)</span>
-                  </div>
-
-                  <div className="price">
-                    {money(product.price)}
-                  </div>
-
-                  <div className="installments">
-                    ou em até 6x sem juros*
-                  </div>
-
-                  <AdicionarAoCarrinho produto={product} />
-                </div>
-              </article>
-            ))}
-          </div>
+          {loading ? <LoadingState /> : error ? <ErrorState message={error} onRetry={retry} />
+            : products.length ? <ProductGrid products={products.slice(0, 4)} />
+              : <EmptyState title="Nenhum produto disponível no momento" message="Volte em breve para conferir o catálogo." />}
         </section>
 
         {/* Banners promocionais */}
@@ -224,16 +128,16 @@ useEffect(() => {
                 MAIS DO QUE PEÇAS
               </div>
 
-              <h3 id="titulo-servicos">Seu carro merece um cuidado completo.</h3>
+              <h2 id="titulo-servicos">Seu carro merece um cuidado completo.</h2>
 
               <p>
-                Conheça os serviços especializados da nossa oficina.
+                Nossa oficina também cuida do seu veículo. Consulte a equipe para conhecer os serviços disponíveis e a compatibilidade com seu carro.
               </p>
             </div>
 
             <div className="promo orange">
-              <div className="eyebrow" style={{ color: 'white' }}>
-                NOVA COLEÇÃO
+              <div className="eyebrow" style={{ color: '#17202b' }}>
+                CUIDADO EM CADA VIAGEM
               </div>
 
               <h3>Prepare-se para a próxima estrada.</h3>
@@ -242,9 +146,9 @@ useEffect(() => {
                 Explore opções para a manutenção do seu veículo.
               </p>
 
-              <a href="/loja">
+              <Link to="/loja">
                 Explorar peças ↗
-              </a>
+              </Link>
             </div>
           </div>
         </section>

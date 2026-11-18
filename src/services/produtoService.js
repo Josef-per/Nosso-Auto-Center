@@ -19,7 +19,7 @@ function formatarProduto(produto) {
     price: Number(produto.preco),
     oldPrice: Number(produto.preco_antigo ?? 0),
     badge: produto.selo ?? '',
-    image: produto.imagem_url || '/favicon.svg',
+    image: produto.imagem_url || '',
     stock: produto.estoque,
   };
 }

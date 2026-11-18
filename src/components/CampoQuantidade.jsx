@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-export default function CampoQuantidade({ quantidade, limite, onChange, disabled, ariaLabel }) {
+export default function CampoQuantidade({ quantidade, limite, onChange, disabled, ariaLabel, onBlur, onKeyDown, invalid, describedBy }) {
   const id = useId();
   return (
     <div className="cart-quantity">
@@ -15,6 +15,10 @@ export default function CampoQuantidade({ quantidade, limite, onChange, disabled
         step={1}
         value={quantidade}
         onChange={(event) => onChange(event.target.value)}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        aria-invalid={invalid || undefined}
+        aria-describedby={describedBy}
         disabled={disabled}
         aria-label={ariaLabel}
         required

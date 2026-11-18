@@ -2,7 +2,7 @@ const pedidoConfirmado = /^\/pedido-confirmado\/[\da-f]{8}(?:-[\da-f]{4}){3}-[\d
 
 export function destinoAposAcesso(search) {
   const destino = new URLSearchParams(search).get('continuar') ?? '';
-  return destino === '/checkout' || pedidoConfirmado.test(destino) ? destino : '/minha-conta';
+  return destino === '/checkout' || destino === '/admin' || pedidoConfirmado.test(destino) ? destino : '/minha-conta';
 }
 
 export function caminhoAcesso(rota, destino) {

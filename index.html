@@ -4,7 +4,26 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nosso Auto Center</title>
+    <meta name="theme-color" content="#111820" />
+    <script>
+      (() => {
+        let saved;
+        try { saved = localStorage.getItem('nac-theme'); } catch {}
+        document.documentElement.dataset.theme = saved === 'dark' || saved === 'light'
+          ? saved : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      })();
+    </script>
+    <meta name="description" content="Catálogo de autopeças do Nosso Auto Center: consulte produtos, marcas e disponibilidade. Projeto acadêmico com compras demonstrativas." />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nosso Auto Center" />
+    <meta property="og:title" content="Nosso Auto Center | Autopeças e oficina" />
+    <meta property="og:description" content="Explore nosso catálogo de autopeças. Projeto acadêmico com compras e pagamentos demonstrativos." />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Nosso Auto Center | Autopeças e oficina" />
+    <meta name="twitter:description" content="Explore nosso catálogo de autopeças. Projeto acadêmico com compras e pagamentos demonstrativos." />
+    <title>Nosso Auto Center | Autopeças e oficina</title>
   </head>
   <body>
     <div id="root"></div>

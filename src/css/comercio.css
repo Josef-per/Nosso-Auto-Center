@@ -184,11 +184,6 @@
   text-decoration: none;
 }
 
-.commerce-empty .primary {
-  background: #b64a12;
-  border-color: #b64a12;
-}
-
 @media (max-width: 960px) {
   .cart-page .cart-layout {
     grid-template-columns: minmax(0, 1fr);

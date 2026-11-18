@@ -30,7 +30,7 @@
 }
 
 .site-layout :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--accent-text);
   outline-offset: 3px;
 }
 
@@ -104,7 +104,7 @@
 }
 
 .auth-art p {
-  font: 800 clamp(32px, 5vw, 47px)/1.07 Outfit, sans-serif;
+  font: 800 clamp(32px, 5vw, 47px)/1.07 'Segoe UI', Arial, sans-serif;
   margin: 0;
 }
 
@@ -139,19 +139,6 @@
   box-shadow: var(--shadow);
   text-decoration: underline;
   text-underline-offset: 4px;
-}
-
-.auth-form .primary,
-.profile-form .primary,
-.missing-page .primary {
-  background: #b64a12;
-  border-color: #b64a12;
-}
-
-.auth-form .primary:hover,
-.profile-form .primary:hover,
-.missing-page .primary:hover {
-  background: #963b0a;
 }
 
 .auth-form button:disabled,
@@ -236,4 +223,23 @@
   .auth-art {
     min-height: 150px;
   }
+}
+
+/* Modal nativo: o navegador contém o foco e torna o fundo inerte. */
+.app-modal { width: min(760px, calc(100% - 32px)); max-height: calc(100dvh - 40px); padding: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--card); color: var(--text); box-shadow: 0 24px 80px #0006; overflow: auto; }
+.app-modal::backdrop { background: rgb(5 12 20 / 72%); }
+.modal-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 1; padding: 18px 24px; background: var(--card); border-bottom: 1px solid var(--border); }
+.modal-heading h2 { font-size: 24px; margin: 0; }
+.modal-heading .iconbtn { border-radius: 8px; flex-shrink: 0; }
+.modal-content { padding: 0 24px 24px; }
+.app-modal fieldset { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
+.app-modal :focus-visible { outline: 3px solid var(--accent-text); outline-offset: 3px; }
+.modal-discard { position: sticky; bottom: 0; padding: 18px 24px; background: var(--notice-bg); color: var(--notice-text); border-top: 1px solid var(--notice-border); }
+.modal-discard p { margin-bottom: 8px; }
+.promo h2 { font-size: 29px; line-height: 1.15; max-width: 340px; }
+@media (max-width: 520px) {
+  .app-modal { width: calc(100% - 20px); max-height: calc(100dvh - 20px); }
+  .modal-heading, .modal-discard { padding: 16px; }
+  .modal-content { padding: 0 16px 20px; }
+  .app-modal .checkout-fields { grid-template-columns: minmax(0,1fr); }
 }

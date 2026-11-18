@@ -1,3 +1,4 @@
+import RotaAdmin from './auth/RotaAdmin';
 import { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { RotaProtegida, RotaVisitante } from './auth/RotasConta';
@@ -8,6 +9,7 @@ import Home from './pages/Home';
 import MinhaConta from './pages/MinhaConta';
 import NaoEncontrada from './pages/NaoEncontrada';
 
+const Admin = lazy(() => import('./pages/Admin'));
 const Acesso = lazy(() => import('./pages/Acesso'));
 const Carrinho = lazy(() => import('./pages/Carrinho'));
 const Checkout = lazy(() => import('./pages/Checkout'));
@@ -30,6 +32,7 @@ export default function App() {
               <Route path="cadastro" element={<Acesso key="cadastro" cadastro />} />
             </Route>
             <Route element={<RotaProtegida />}>
+              <Route element={<RotaAdmin />}><Route path="admin" element={<Admin />} /></Route>
               <Route path="minha-conta" element={<MinhaConta />} />
               <Route path="checkout" element={<Checkout />} />
               <Route path="pedido-confirmado/:id" element={<PedidoConfirmado />} />

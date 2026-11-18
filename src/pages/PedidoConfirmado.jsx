@@ -1,3 +1,4 @@
+import PaymentSummary from '../components/PaymentSummary';
 import { Link, useParams } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
 import ResumoPedido from '../components/ResumoPedido';
@@ -26,9 +27,10 @@ function DetalhesPedido({ usuarioId, id }) {
         <>
           <dl className="panel pedido-identificacao">
             <div><dt>Identificador</dt><dd className="pedido-id">{pedido.id}</dd></div>
-            <div><dt>Status</dt><dd><StatusPedido status={pedido.status} /></dd></div>
+            <div><dt>Status de atendimento</dt><dd><StatusPedido status={pedido.status} /></dd></div>
           </dl>
-          <ResumoPedido itens={pedido.itens} total={Number(pedido.total)} confirmado />
+          <section className="panel pedido-aviso" aria-labelledby="titulo-pagamento-pedido"><h2 id="titulo-pagamento-pedido">Pagamento demonstrativo</h2><PaymentSummary method={pedido.metodo_pagamento} status={pedido.status_pagamento} /></section>
+          <ResumoPedido itens={pedido.itens} total={Number(pedido.total)} subtotal={pedido.subtotal_produtos == null ? undefined : Number(pedido.subtotal_produtos)} frete={pedido.frete == null ? undefined : Number(pedido.frete)} confirmado />
         </>
       )}
       <div className="checkout-actions">

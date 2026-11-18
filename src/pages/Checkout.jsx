@@ -4,65 +4,11 @@ import { useSessao } from '../auth/useSessao';
 import { subtotalItem, totalCarrinho } from '../carrinho/resumoCarrinho';
 import { quantidadeDoProduto, useCarrinho } from '../carrinho/useCarrinho';
 import ResumoPedido from '../components/ResumoPedido';
-import { estados, validarEndereco } from '../lib/enderecoEntrega';
-import { finalizarPedido, liberarNovoEnvio, pedidoAConferir } from '../services/pedidoService';
-
-const campos = [
-  { nome: 'cep', rotulo: 'CEP', autoComplete: 'postal-code', inputMode: 'numeric', maxLength: 9 },
-  { nome: 'logradouro', rotulo: 'Logradouro', autoComplete: 'address-line1' },
-  { nome: 'numero', rotulo: 'Número' },
-  { nome: 'bairro', rotulo: 'Bairro (opcional)', autoComplete: 'address-level3', opcional: true },
-  { nome: 'complemento', rotulo: 'Complemento (opcional)', autoComplete: 'address-line2', opcional: true },
-  { nome: 'cidade', rotulo: 'Cidade', autoComplete: 'address-level2' },
-];
-
-function Endereco({ onSubmit, erroCampo, enviando, bloqueado, endereco }) {
-  return (
-    <section className="panel" aria-labelledby="titulo-endereco">
-      <h2 id="titulo-endereco">Endereço de entrega</h2>
-      <form className="checkout-form" onSubmit={onSubmit} noValidate>
-        <fieldset disabled={enviando}>
-          <div className="checkout-fields">
-            {campos.map(({ nome, rotulo, opcional, ...atributos }) => (
-              <div key={nome} className={nome === 'logradouro' || nome === 'complemento' ? 'checkout-wide' : undefined}>
-                <label className="field" htmlFor={`entrega-${nome}`}>{rotulo}</label>
-                <input
-                  id={`entrega-${nome}`}
-                  name={nome}
-                  className="forminput"
-                  defaultValue={endereco?.[nome] ?? ''}
-                  required={!opcional}
-                  aria-invalid={erroCampo?.campo === nome || undefined}
-                  aria-describedby={erroCampo?.campo === nome ? 'erro-endereco' : undefined}
-                  {...atributos}
-                />
-              </div>
-            ))}
-            <div>
-              <label className="field" htmlFor="entrega-uf">UF</label>
-              <select
-                id="entrega-uf"
-                name="uf"
-                className="forminput"
-                defaultValue={endereco?.uf ?? ''}
-                required
-                aria-invalid={erroCampo?.campo === 'uf' || undefined}
-                aria-describedby={erroCampo?.campo === 'uf' ? 'erro-endereco' : undefined}
-              >
-                <option value="">Selecione</option>
-                {estados.map((uf) => <option value={uf} key={uf}>{uf}</option>)}
-              </select>
-            </div>
-          </div>
-          {erroCampo && <p id="erro-endereco" className="notice" role="alert">{erroCampo.erro}</p>}
-          <button className="pill primary" type="submit" disabled={bloqueado}>
-            {enviando ? 'Confirmando pedido…' : 'Confirmar pedido'}
-          </button>
-        </fieldset>
-      </form>
-    </section>
-  );
-}
+import CheckoutForm from '../checkout/CheckoutForm';
+import { validarEndereco } from '../lib/enderecoEntrega';
+import { apenasDigitos, cpfValido } from '../lib/identificacao';
+import { calcularFrete } from '../lib/frete';
+import { conferirCheckout, finalizarPedido, liberarNovoEnvio, pedidoAConferir } from '../services/pedidoService';
 
 function CheckoutConta({ usuarioId }) {
   const { itens, carregando, erro: erroCarrinho, gravando, recarregar } = useCarrinho();
@@ -70,7 +16,17 @@ function CheckoutConta({ usuarioId }) {
   const [enviando, setEnviando] = useState(false);
   const [erroCampo, setErroCampo] = useState(null);
   const [erroPedido, setErroPedido] = useState(null);
-  const [endereco, setEndereco] = useState(null);
+  const [endereco, setEndereco] = useState({ cep: '', logradouro: '', numero: '', bairro: '', complemento: '', cidade: '', uf: '' });
+  const [pagamento, setPagamento] = useState('pix');
+  const [backend, setBackend] = useState('carregando');
+  const [checagem, setChecagem] = useState(0);
+  const frete = calcularFrete(endereco.cep);
+  useEffect(() => {
+    let ativo = true;
+    conferirCheckout().then((disponivel) => { if (ativo) setBackend(disponivel ? 'pronto' : 'indisponivel'); },
+      () => { if (ativo) setBackend('indisponivel'); });
+    return () => { ativo = false; };
+  }, [checagem]);
   const [incerto, setIncerto] = useState(() => pedidoAConferir(usuarioId));
   const ativo = useRef(false);
   const envio = useRef(false);
@@ -84,26 +40,30 @@ function CheckoutConta({ usuarioId }) {
     !item.produto || quantidadeDoProduto(itens, item.produtoId) > item.produto.stock);
   const excedeLimitePedido = itens.some((item) => item.quantidade > 99);
   const bloqueado = carregando || Boolean(erroCarrinho) || !itens.length
-    || indisponivel || excedeLimitePedido || gravando || incerto || enviando;
+    || indisponivel || excedeLimitePedido || gravando || incerto || enviando || backend !== 'pronto';
 
   async function confirmar(event) {
     event.preventDefault();
     if (bloqueado || envio.current) return;
 
     const formulario = event.currentTarget;
-    const validacao = validarEndereco(new FormData(formulario));
+    const dados = new FormData(formulario);
+    const cpf = apenasDigitos(dados.get('cpf'));
+    const validacao = !cpfValido(cpf) ? { campo: 'cpf', erro: 'Informe um CPF com dígitos verificadores válidos.' }
+      : !['pix', 'boleto', 'cartao_credito'].includes(pagamento) ? { campo: 'pagamento', erro: 'Selecione uma forma de pagamento demonstrativa.' }
+        : validarEndereco(dados);
     setErroPedido(null);
     if (validacao.erro) {
       setErroCampo(validacao);
-      formulario.elements.namedItem(validacao.campo)?.focus();
+      formulario.querySelector('[name="' + validacao.campo + '"]')?.focus();
       return;
     }
 
     setErroCampo(null);
-    setEndereco(validacao.endereco);
+
     envio.current = true;
     setEnviando(true);
-    const resultado = await finalizarPedido(usuarioId, validacao.endereco);
+    const resultado = await finalizarPedido(usuarioId, validacao.endereco, pagamento, cpf);
     envio.current = false;
     if (resultado.id) {
       recarregar();
@@ -136,6 +96,10 @@ function CheckoutConta({ usuarioId }) {
         <h1>Finalizar compra</h1>
         <p className="text-muted">Compra demonstrativa, sem processamento de pagamento real.</p>
       </div>
+      {backend !== 'pronto' && <div className="notice" role="status">
+        {backend === 'carregando' ? 'Verificando disponibilidade do checkout…' : 'Checkout temporariamente indisponível. A configuração de frete e pagamento ainda precisa ser confirmada no servidor.'}
+        {backend === 'indisponivel' && <button type="button" className="pill" onClick={() => { setBackend('carregando'); setChecagem((n) => n + 1); }}>Verificar novamente</button>}
+      </div>}
       {incerto && (
         <section className="panel pedido-aviso" aria-labelledby="titulo-envio-incerto">
           <h2 id="titulo-envio-incerto">Confira o histórico</h2>
@@ -183,14 +147,18 @@ function CheckoutConta({ usuarioId }) {
       )}
       {itens.length > 0 && (
         <div className="checkout-layout">
-          <Endereco
+          <CheckoutForm
             onSubmit={confirmar}
             erroCampo={erroCampo}
             bloqueado={bloqueado}
             enviando={enviando}
             endereco={endereco}
+            onEndereco={setEndereco}
+            pagamento={pagamento}
+            onPagamento={setPagamento}
+            frete={frete}
           />
-          <ResumoPedido itens={linhas} total={totalCarrinho(itens)} />
+          <ResumoPedido itens={linhas} subtotal={totalCarrinho(itens)} frete={frete} total={Math.round((totalCarrinho(itens) + (frete ?? 0)) * 100) / 100} />
         </div>
       )}
     </div>

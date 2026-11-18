@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import ProductImage from '../components/ProductImage';
+import { useId, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
 import { subtotalItem, totalCarrinho } from '../carrinho/resumoCarrinho';
@@ -9,21 +10,37 @@ import { formatarPreco } from '../lib/formatarPreco';
 function ItemCarrinho({ item, informar }) {
   const { itens, gravando, alterar } = useCarrinho();
   const [rascunho, setRascunho] = useState(null);
+  const [erroQuantidade, setErroQuantidade] = useState('');
+  const erroId = useId();
+  const operando = useRef(false);
+  const removendo = useRef(false);
   const { produto } = item;
   const nome = produto?.name ?? 'Produto indisponível';
   const outrasUnidades = quantidadeDoProduto(itens, item.produtoId) - item.quantidade;
-  const limite = Math.max(0, (produto?.stock ?? 0) - outrasUnidades);
+  const limite = Math.max(0, Math.min(99, (produto?.stock ?? 0) - outrasUnidades));
   const quantidade = Number(rascunho ?? item.quantidade);
   const quantidadeValida = Number.isSafeInteger(quantidade) && quantidade >= 1 && quantidade <= limite;
 
   async function modificar(acao) {
+    if (operando.current || gravando) return;
+    if (acao === 'atualizar' && !quantidadeValida) {
+      setRascunho(null);
+      setErroQuantidade('Informe uma quantidade inteira entre 1 e ' + limite + '. O valor confirmado foi restaurado.');
+      return;
+    }
+    if (acao === 'atualizar' && quantidade === item.quantidade) { setRascunho(null); return; }
+    operando.current = true;
+    setErroQuantidade('');
     informar(null);
     try {
       await alterar({ acao, id: item.id, quantidade });
       setRascunho(null);
       informar({ texto: acao === 'remover' ? 'Item removido.' : 'Quantidade atualizada.' });
     } catch (error) {
-      informar({ erro: error.message });
+      setRascunho(null);
+      informar({ erro: error.message + (acao === 'atualizar' ? ' O último valor confirmado foi restaurado. Recarregue o carrinho para conferir.' : '') });
+    } finally {
+      operando.current = false;
     }
   }
 
@@ -31,7 +48,7 @@ function ItemCarrinho({ item, informar }) {
     <li className="cart-item cart-line">
       {produto && (
         <Link className="cart-photo" to={`/produto/${produto.id}`} tabIndex={-1} aria-hidden="true">
-          <img src={produto.image} alt="" />
+          <ProductImage src={produto.image} alt="" />
         </Link>
       )}
       <div className="cart-product-info">
@@ -46,33 +63,31 @@ function ItemCarrinho({ item, informar }) {
       </div>
       <div className="cart-line-actions">
         {limite > 0 ? (
-          <form onSubmit={(event) => {
-            event.preventDefault();
-            if (quantidadeValida && quantidade !== item.quantidade) modificar('atualizar');
-          }}>
+          <div>
             <CampoQuantidade
-              quantidade={rascunho ?? item.quantidade}
-              limite={limite}
-              onChange={setRascunho}
-              ariaLabel={`Quantidade de ${nome}`}
-              disabled={gravando}
+              quantidade={rascunho ?? item.quantidade} limite={limite}
+              onChange={(valor) => { setRascunho(valor); setErroQuantidade(''); }}
+              onBlur={(event) => {
+                if (removendo.current || event.relatedTarget?.closest('[data-remover-item]')) { setRascunho(null); return; }
+                modificar('atualizar');
+              }}
+              onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); event.currentTarget.blur(); } }}
+              ariaLabel={`Quantidade de ${nome}`} disabled={gravando}
+              invalid={Boolean(erroQuantidade)} describedBy={erroQuantidade ? erroId : undefined}
             />
-            <button
-              className="pill"
-              type="submit"
-              disabled={gravando || !quantidadeValida || quantidade === item.quantidade}
-              aria-label={`Atualizar quantidade de ${nome}`}
-            >
-              Atualizar
-            </button>
-          </form>
+            {erroQuantidade && <p id={erroId} className="field-error" role="alert">{erroQuantidade}</p>}
+          </div>
         ) : <p>Quantidade: {item.quantidade}</p>}
         <button
           className="cart-remove"
+          data-remover-item="true"
           type="button"
           disabled={gravando}
           aria-label={`Remover ${nome}`}
-          onClick={() => modificar('remover')}
+          onPointerDown={() => { removendo.current = true; }}
+          onPointerCancel={() => { removendo.current = false; }}
+          onPointerLeave={() => { removendo.current = false; }}
+          onClick={() => { removendo.current = false; modificar('remover'); }}
         >
           Remover
         </button>

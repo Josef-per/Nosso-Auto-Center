@@ -20,6 +20,10 @@ export function validarEndereco(dados) {
     complemento: ler('complemento'),
   };
 
+  if (Number(endereco.cep) < 1000000) return { campo: 'cep', erro: 'Informe um CEP em uma faixa válida.' };
+  for (const [campo, valor] of Object.entries(endereco)) {
+    if (valor.length > (campo === 'numero' ? 30 : 200)) return { campo, erro: 'O campo excede o tamanho permitido.' };
+  }
   if (!endereco.logradouro) return { campo: 'logradouro', erro: 'Informe o logradouro.' };
   if (!endereco.numero) return { campo: 'numero', erro: 'Informe o número do endereço.' };
   if (!endereco.cidade) return { campo: 'cidade', erro: 'Informe a cidade.' };

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Gauge, Menu, ShoppingCart, UserRound, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
+import { useCarrinho } from '../carrinho/useCarrinho';
 
 function Marca() {
   return (
@@ -31,6 +32,8 @@ function LinksNavegacao({ onClick }) {
 
 function Header() {
   const session = useSessao();
+  const { itens } = useCarrinho();
+  const quantidade = itens.reduce((total, item) => total + item.quantidade, 0);
   const [menuAberto, setMenuAberto] = useState(false);
   const botaoMenu = useRef(null);
   const conta = session === null ? '/login' : '/minha-conta';
@@ -54,14 +57,14 @@ function Header() {
           <NavLink to={conta} className="iconbtn" aria-label={session === null ? 'Entrar' : 'Minha conta'}>
             <UserRound size={21} aria-hidden="true" />
           </NavLink>
-          <button
+          <NavLink
+            to="/carrinho"
             className="iconbtn"
-            type="button"
-            aria-label="Carrinho"
-            onClick={() => window.alert('Carrinho será integrado na próxima etapa!')}
+            aria-label={quantidade ? `Carrinho, ${quantidade} ${quantidade === 1 ? 'unidade' : 'unidades'}` : 'Carrinho'}
           >
             <ShoppingCart size={21} aria-hidden="true" />
-          </button>
+            {quantidade > 0 && <span className="count cart-count" aria-hidden="true">{quantidade}</span>}
+          </NavLink>
           <button
             ref={botaoMenu}
             className="iconbtn mobile-menu"
@@ -116,7 +119,9 @@ export default function Layout() {
       <a className="site-skip" href="#conteudo">Ir para o conteúdo</a>
       <Header key={pathname + hash + key} />
       <main id="conteudo" tabIndex={-1}>
-        <Outlet />
+        <Suspense fallback={<p className="container route-status" role="status">Carregando página…</p>}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LogOut } from 'lucide-react';
 import { useSessao } from '../auth/useSessao';
+import MeusPedidos from '../components/MeusPedidos';
 import { carregarPerfil, sair, salvarPerfil } from '../services/contaService';
 
 function Perfil({ user }) {
@@ -133,10 +134,13 @@ export default function MinhaConta() {
           </button>
           {erro && <p className="notice" role="alert">{erro}</p>}
         </div>
-        <section className="panel" aria-labelledby="titulo-perfil">
-          <h2 id="titulo-perfil">Meus dados</h2>
-          <Perfil key={user.id} user={user} />
-        </section>
+        <div className="account-content">
+          <section className="panel" aria-labelledby="titulo-perfil">
+            <h2 id="titulo-perfil">Meus dados</h2>
+            <Perfil key={user.id} user={user} />
+          </section>
+          <MeusPedidos key={user.id} usuarioId={user.id} />
+        </div>
       </div>
     </div>
   );

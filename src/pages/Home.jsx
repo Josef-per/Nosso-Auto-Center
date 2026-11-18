@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AdicionarAoCarrinho from '../components/AdicionarAoCarrinho';
 import { listarProdutos } from '../services/produtoService';
 
 export default function Home() {
@@ -184,7 +185,9 @@ useEffect(() => {
             ) : products.map((product) => (
               <article className="product" key={product.id}>
                 <div className="product-img">
-                  <img src={product.image} alt={product.name} />
+                  <Link to={`/produto/${product.id}`}>
+                    <img src={product.image} alt={product.name} />
+                  </Link>
 
                   <span className="tag">{product.badge}</span>
                 </div>
@@ -192,7 +195,7 @@ useEffect(() => {
                 <div className="product-body">
                   <small>{product.category}</small>
 
-                  <h3>{product.name}</h3>
+                  <h3><Link to={`/produto/${product.id}`}>{product.name}</Link></h3>
 
                   <div className="rating">
                     ★★★★★ <span style={{ color: 'var(--muted)' }}>(4,8)</span>
@@ -206,9 +209,7 @@ useEffect(() => {
                     ou em até 6x sem juros*
                   </div>
 
-                  <button className="pill">
-                    Adicionar ao carrinho →
-                  </button>
+                  <AdicionarAoCarrinho produto={product} />
                 </div>
               </article>
             ))}

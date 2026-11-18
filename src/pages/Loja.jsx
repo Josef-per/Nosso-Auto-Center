@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { listarProdutos } from '../services/produtoService';
 import { Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
+import AdicionarAoCarrinho from '../components/AdicionarAoCarrinho';
 
 
 export default function Loja() {
@@ -244,14 +245,7 @@ export default function Loja() {
                         ou em até 6x sem juros*
                       </div>
 
-                      <button
-                        className="pill"
-                        onClick={() =>
-                          alert('Carrinho será integrado na próxima etapa!')
-                        }
-                      >
-                        Adicionar ao carrinho →
-                      </button>
+                      <AdicionarAoCarrinho produto={product} />
                     </div>
                   </article>
                 ))}

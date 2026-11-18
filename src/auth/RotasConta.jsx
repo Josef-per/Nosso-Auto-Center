@@ -1,4 +1,5 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { caminhoAcesso, destinoAposAcesso } from './destinoAcesso';
 import { useSessao } from './useSessao';
 
 function AguardeSessao() {
@@ -7,12 +8,15 @@ function AguardeSessao() {
 
 export function RotaProtegida() {
   const session = useSessao();
+  const { pathname } = useLocation();
   if (session === undefined) return <AguardeSessao />;
-  return session ? <Outlet /> : <Navigate to="/login" replace />;
+  const destino = destinoAposAcesso(new URLSearchParams({ continuar: pathname }));
+  return session ? <Outlet /> : <Navigate to={caminhoAcesso('/login', destino)} replace />;
 }
 
 export function RotaVisitante() {
   const session = useSessao();
+  const { search } = useLocation();
   if (session === undefined) return <AguardeSessao />;
-  return session ? <Navigate to="/minha-conta" replace /> : <Outlet />;
+  return session ? <Navigate to={destinoAposAcesso(search)} replace /> : <Outlet />;
 }

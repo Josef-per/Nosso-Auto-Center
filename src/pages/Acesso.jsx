@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { caminhoAcesso, destinoAposAcesso } from '../auth/destinoAcesso';
 import { cadastrar, entrar } from '../services/contaService';
 
 const mensagens = {
@@ -12,6 +13,9 @@ const mensagens = {
 };
 
 export default function Acesso({ cadastro = false }) {
+  const { search } = useLocation();
+  const destino = destinoAposAcesso(search);
+  const login = caminhoAcesso('/login', destino);
   const [enviando, setEnviando] = useState(false);
   const [emailEnviado, setEmailEnviado] = useState('');
   const [erro, setErro] = useState('');
@@ -32,7 +36,7 @@ export default function Acesso({ cadastro = false }) {
     setEnviando(true);
     try {
       if (cadastro) {
-        const session = await cadastrar(nome, email, senha);
+        const session = await cadastrar(nome, email, senha, destino);
         if (!session) setEmailEnviado(email);
       } else {
         await entrar(email, senha);
@@ -54,16 +58,21 @@ export default function Acesso({ cadastro = false }) {
         </div>
         <section className="auth-form" aria-labelledby="titulo-acesso">
           <nav className="auth-switch" aria-label="Opções de acesso">
-            <NavLink to="/login">Entrar</NavLink>
-            <NavLink to="/cadastro">Cadastro</NavLink>
+            <NavLink to={login}>Entrar</NavLink>
+            <NavLink to={caminhoAcesso('/cadastro', destino)}>Cadastro</NavLink>
           </nav>
           <h1 id="titulo-acesso">{cadastro ? 'Crie sua conta' : 'Entre na sua conta'}</h1>
+          {destino === '/checkout' && (
+            <p className="text-muted">
+              A compra usa o carrinho da sua conta. Os itens do carrinho de visitante ficam neste navegador.
+            </p>
+          )}
           {emailEnviado ? (
             <>
               <p className="text-muted" role="status">
                 Verifique a caixa de entrada e o spam de <strong>{emailEnviado}</strong> para confirmar o cadastro.
               </p>
-              <Link className="account-link" to="/login">Ir para o login</Link>
+              <Link className="account-link" to={login}>Ir para o login</Link>
             </>
           ) : (
             <form onSubmit={enviar}>

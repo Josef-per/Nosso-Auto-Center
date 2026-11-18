@@ -12,13 +12,13 @@ export async function entrar(email, password) {
   if (error) throw error;
 }
 
-export async function cadastrar(nome, email, password) {
+export async function cadastrar(nome, email, password, destino = '/minha-conta') {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { nome },
-      emailRedirectTo: new URL('/minha-conta', window.location.origin).href,
+      emailRedirectTo: new URL(destino, window.location.origin).href,
     },
   });
   if (error) throw error;

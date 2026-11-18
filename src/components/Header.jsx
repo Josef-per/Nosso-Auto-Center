@@ -30,15 +30,17 @@ export default function Header() {
         </nav>
         <div className="right">
           <ThemeToggle />
-          <NavLink to={conta} className="iconbtn" aria-label={session === null ? 'Entrar' : 'Minha conta'}>
+          <NavLink to={conta} className="iconbtn header-account" aria-label={session === null ? 'Entrar' : 'Minha conta'}>
             <UserRound size={21} aria-hidden="true" />
+            <span className="header-action-label">{session === null ? 'Entrar' : 'Minha conta'}</span>
           </NavLink>
           <NavLink
             to="/carrinho"
-            className="iconbtn"
+            className="iconbtn header-cart"
             aria-label={quantidade ? `Carrinho, ${quantidade} ${quantidade === 1 ? 'unidade' : 'unidades'}` : 'Carrinho'}
           >
             <ShoppingCart size={21} aria-hidden="true" />
+            <span className="header-action-label">Carrinho</span>
             {quantidade > 0 && <span className="count cart-count" aria-hidden="true">{quantidade}</span>}
           </NavLink>
           <button

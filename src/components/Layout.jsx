@@ -11,10 +11,11 @@ export default function Layout() {
     const destino = document.getElementById(hash.slice(1));
     if (destino) {
       destino.focus({ preventScroll: true });
-      destino.scrollIntoView();
+      destino.scrollIntoView({ block: 'start' });
       return;
     }
-    window.scrollTo(0, 0);
+    // Trocas de página começam no topo; somente as âncoras usam o scroll suave do CSS.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname, hash, key]);
 
   return (

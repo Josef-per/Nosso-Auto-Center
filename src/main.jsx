@@ -7,6 +7,7 @@ import './css/global.css';
 import './css/estrutura.css';
 import './css/comercio.css';
 import './css/pedidos.css';
+import './css/home.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

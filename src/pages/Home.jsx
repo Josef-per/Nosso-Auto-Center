@@ -1,5 +1,5 @@
-import "../css/global.css"
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { listarProdutos } from '../services/produtoService';
 
 export default function Home() {
@@ -64,13 +64,13 @@ useEffect(() => {
           </p>
 
           <div className="hero-actions">
-            <a href="/loja" className="pill primary">
+            <Link to="/loja" className="pill primary">
               Explorar produtos →
-            </a>
+            </Link>
 
-            <a href="/servicos" className="pill ghost">
+            <Link to="/#servicos" className="pill ghost">
               Conheça a oficina
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -216,22 +216,18 @@ useEffect(() => {
         </section>
 
         {/* Banners promocionais */}
-        <section className="section">
+        <section className="section" id="servicos" aria-labelledby="titulo-servicos" tabIndex={-1}>
           <div className="split-banner">
             <div className="promo">
               <div className="eyebrow" style={{ color: '#ff9d58' }}>
                 MAIS DO QUE PEÇAS
               </div>
 
-              <h3>Seu carro merece um cuidado completo.</h3>
+              <h3 id="titulo-servicos">Seu carro merece um cuidado completo.</h3>
 
               <p>
                 Conheça os serviços especializados da nossa oficina.
               </p>
-
-              <a href="/servicos">
-                Conhecer serviços ↗
-              </a>
             </div>
 
             <div className="promo orange">

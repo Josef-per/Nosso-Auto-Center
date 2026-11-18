@@ -92,7 +92,7 @@ export default function Loja() {
 
   return (
     <>
-      <main className="container">
+      <div className="container">
         <div className="page-heading">
           <div className="crumb">
             <Link to="/">Início</Link> / Autopeças
@@ -270,7 +270,7 @@ export default function Loja() {
             )}
           </section>
         </div>
-      </main>
+      </div>
     </>
   )
 }

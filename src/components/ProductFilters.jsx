@@ -17,6 +17,7 @@ export default function ProductFilters({ categories, category, onCategory, brand
       <label className="filter-title" htmlFor="preco-maximo">Faixa de preço</label>
       <p className="text-muted">Até {formatarPreco(maxPrice)}</p>
       <input id="preco-maximo" type="range" min="0" max={priceLimit} step="10" value={maxPrice}
+        style={{ '--range-progress': `${Math.min(100, maxPrice / priceLimit * 100)}%` }}
         aria-valuetext={formatarPreco(maxPrice)} onChange={(event) => onPrice(Number(event.target.value))} />
     </div>
     <button className="pill" type="button" onClick={onClear}><X size={15} aria-hidden="true" />Limpar filtros</button>

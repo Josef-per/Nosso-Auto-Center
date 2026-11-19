@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { MapPin, Menu, Phone, ShoppingCart, UserRound, X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
@@ -11,8 +11,21 @@ export default function Header() {
   const quantidade = itens.reduce((total, item) => total + item.quantidade, 0);
   const [menuAberto, setMenuAberto] = useState(false);
   const botaoMenu = useRef(null);
+  const header = useRef(null);
   const conta = session === null ? '/login' : '/minha-conta';
   const fecharMenu = () => setMenuAberto(false);
+
+  useLayoutEffect(() => {
+    const element = header.current;
+    const layout = element.parentElement;
+    const atualizarAltura = () => {
+      if (element.isConnected) layout.style.setProperty('--header-height', `${element.getBoundingClientRect().height}px`);
+    };
+    atualizarAltura();
+    const observer = new ResizeObserver(atualizarAltura);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [menuAberto]);
 
   function tratarTecla(event) {
     if (event.key === 'Escape' && menuAberto) {
@@ -22,7 +35,7 @@ export default function Header() {
   }
 
   return (
-    <header className="header site-header" onKeyDown={tratarTecla}>
+    <header ref={header} className="header site-header" onKeyDown={tratarTecla}>
       <div className="header-top"><div className="container"><span><MapPin size={13} aria-hidden="true" />Autopeças & oficina em Franca · SP</span><a href="tel:+551634328200"><Phone size={13} aria-hidden="true" />(16) 3432-8200</a></div></div>
       <div className="container header-inner">
         <Marca />

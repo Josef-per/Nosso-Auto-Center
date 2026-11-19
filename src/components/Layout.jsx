@@ -9,6 +9,8 @@ export default function Layout() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    // A Home posiciona Serviços uma única vez, após estabilizar o catálogo.
+    if (pathname === '/' && hash === '#servicos') return;
     const destino = document.getElementById(hash.slice(1));
     if (destino) {
       destino.focus({ preventScroll: true });

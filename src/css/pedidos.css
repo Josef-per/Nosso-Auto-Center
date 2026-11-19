@@ -101,7 +101,7 @@
 
 .pedido-identificacao dt {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .pedido-identificacao dd {
@@ -157,7 +157,7 @@
 }
 
 /* Etapa 5: formulários, pagamentos e administração usam os tokens do tema. */
-.field-error { margin: 8px 0; color: var(--notice-text); font-size: 13px; }
+.field-error { margin: 8px 0; color: var(--notice-text); font-size: 14px; }
 .forminput[aria-invalid="true"] { border-color: var(--accent-text); }
 .cep-search { display: flex; align-items: end; gap: 12px; }
 .cep-search > div { flex: 1; }
@@ -206,12 +206,12 @@
   .payment-option { align-items: start; padding: 14px; }
 }
 
-.payment-summary { width: 100%; font-size: 13px; }
+.payment-summary { width: 100%; font-size: 14px; }
 .payment-summary p { margin: 8px 0; }
 .pedido-meta .payment-summary { flex-basis: 100%; }
 .delivery-data { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; padding: 16px; margin: 8px 0 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
 .delivery-data > div:last-child { grid-column: 1 / -1; }
-.delivery-data dt { color: var(--muted); font-size: 12px; }
+.delivery-data dt { color: var(--muted); font-size: 14px; }
 .delivery-data dd { margin: 5px 0 0; overflow-wrap: anywhere; }
 .delivery-data address { font-style: normal; }
 .delivery-data address span { display: block; }

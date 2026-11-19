@@ -32,8 +32,8 @@ function ReviewForm({ minha, produtoId, usuarioId, onChanged }) {
     <label className="field" htmlFor="avaliacao-comentario">Comentário (opcional)</label><textarea id="avaliacao-comentario" className="forminput" rows={4} maxLength={limiteComentario} value={comentario} disabled={ocupado} onChange={(e) => setComentario(e.target.value)} aria-describedby="avaliacao-limite" placeholder="O que você gostaria de compartilhar?" />
     <small className="text-muted" id="avaliacao-limite">{[...comentario].length} / 1.000 caracteres</small>
     {erro && <p className="notice" role="alert">{erro}</p>}
-    <div className="checkout-actions"><button className="pill primary" type="submit" disabled={ocupado}>{ocupado ? 'Salvando…' : minha ? 'Salvar alterações' : 'Publicar avaliação'}</button>{minha && <button className="pill" type="button" disabled={ocupado} onClick={() => setConfirmar(true)}>Remover avaliação</button>}</div>
-    {confirmar && <div className="notice"><p>Remover sua avaliação deste produto?</p><div className="checkout-actions"><button className="pill" type="button" disabled={ocupado} onClick={() => executar(true)}>Confirmar remoção</button><button className="pill" type="button" disabled={ocupado} onClick={() => setConfirmar(false)}>Manter avaliação</button></div></div>}
+    <div className="checkout-actions"><button className="pill primary" type="submit" disabled={ocupado}>{ocupado ? 'Salvando…' : minha ? 'Salvar alterações' : 'Publicar avaliação'}</button>{minha && <button className="pill danger" type="button" disabled={ocupado} onClick={() => setConfirmar(true)}>Remover avaliação</button>}</div>
+    {confirmar && <div className="notice"><p>Remover sua avaliação deste produto?</p><div className="checkout-actions"><button className="pill danger" type="button" disabled={ocupado} onClick={() => executar(true)}>Confirmar remoção</button><button className="pill" type="button" disabled={ocupado} onClick={() => setConfirmar(false)}>Manter avaliação</button></div></div>}
   </form>;
 }
 

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigationType } from 'react-router-dom';
 import {
   ArrowDown, ArrowRight, ArrowUpRight, CircleDot, Cog, Crosshair,
   Disc3, Droplets, Gauge, PackageCheck, ShoppingBag, Truck, Wind, Wrench,
@@ -24,14 +24,23 @@ const servicos = [
 
 export default function Home() {
   const { products, loading, error, retry } = useCatalogo();
+  const { hash, key } = useLocation();
+  const navigationType = useNavigationType();
+  const ancoraTratada = useRef(null);
 
   useEffect(() => {
-    // O catálogo assíncrono pode deslocar a seção depois da navegação inicial.
-    const destino = document.getElementById('servicos');
-    if (!loading && window.location.hash === '#servicos' && document.activeElement === destino) {
-      destino.scrollIntoView({ block: 'start' });
-    }
-  }, [loading]);
+    if (hash !== '#servicos' || loading || ancoraTratada.current === key) return;
+    // Aguarda o layout final, sem reposicionar a página em recargas do catálogo.
+    const frame = requestAnimationFrame(() => {
+      const destino = document.getElementById('servicos');
+      if (!destino) return;
+      ancoraTratada.current = key;
+      destino.focus({ preventScroll: true });
+      const suave = navigationType !== 'POP' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      destino.scrollIntoView({ block: 'start', behavior: suave ? 'smooth' : 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hash, key, loading, navigationType]);
 
   return (
     <div className="home-page">

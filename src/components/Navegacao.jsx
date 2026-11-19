@@ -15,7 +15,7 @@ export function LinksNavegacao({ onClick }) {
   return (
     <>
       <Link to="/" onClick={onClick} aria-current={pathname === '/' && !emServicos ? 'page' : undefined}>
-        Home
+        Início
       </Link>
       <NavLink to="/loja" onClick={onClick}>Loja</NavLink>
       <Link to="/#servicos" onClick={onClick} aria-current={emServicos ? 'location' : undefined}>

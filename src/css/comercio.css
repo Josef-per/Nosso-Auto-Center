@@ -22,7 +22,7 @@
 
 .cart-feedback {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
   margin: 8px 0 0;
 }
@@ -181,7 +181,7 @@
 .cart-stock-warning {
   border-left: 3px solid var(--accent);
   padding-left: 8px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .cart-summary {

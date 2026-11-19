@@ -1,9 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { cpfValido, mascararCpf, mascararCep } from '../src/lib/identificacao.js';
 import { calcularFrete } from '../src/lib/frete.js';
 import { validarEndereco } from '../src/lib/enderecoEntrega.js';
 import { consultarCep } from '../src/services/cepService.js';
+
+test('checkout: margem de 22px fica restrita ao botão de envio', async () => {
+  const css = await readFile(new URL('../src/css/pedidos.css', import.meta.url), 'utf8');
+  const redesign = await readFile(new URL('../src/css/redesign.css', import.meta.url), 'utf8');
+  const selectField = await readFile(new URL('../src/components/SelectField.jsx', import.meta.url), 'utf8');
+
+  assert.match(css, /\.checkout-form\s*>\s*fieldset\s*>\s*button\[type="submit"\]\s*\{\s*margin-top:\s*22px;/);
+  assert.doesNotMatch(css, /\.checkout-form\s+button\s*\{\s*margin-top:\s*22px;/);
+  assert.match(selectField, /className=\{`forminput select-trigger/);
+  assert.match(redesign, /\.forminput\s*\{[^}]*min-height:\s*50px/);
+});
 
 test('CPF: valida os dois dígitos, rejeita repetição e corrupção', () => {
   assert.equal(cpfValido('529.982.247-25'), true);

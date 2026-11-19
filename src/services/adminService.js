@@ -12,6 +12,17 @@ async function rpc(nome, parametros) {
 }
 export const verificarAdmin = () => rpc('usuario_admin');
 export const carregarResumoAdmin = () => rpc('admin_resumo');
+export async function carregarDashboardAdmin(dias = 30) {
+  if (dias !== null && dias !== 7 && dias !== 30) throw new Error('Período inválido.');
+  try {
+    const data = await rpc('admin_dashboard', { p_dias: dias });
+    if (!data?.resumo || !Array.isArray(data.serie) || !Array.isArray(data.status) || !Array.isArray(data.mais_vendidos) || !Array.isArray(data.estoque)) throw new Error('O servidor retornou métricas incompatíveis. Revise a migração do dashboard.');
+    return data;
+  } catch (error) {
+    if (error.cause?.code === 'PGRST202') throw new Error('As métricas ainda não estão disponíveis. A migração do dashboard precisa ser revisada e aplicada manualmente no servidor.', { cause: error });
+    throw error;
+  }
+}
 export const listarProdutosAdmin = () => rpc('admin_listar_produtos');
 export const listarPedidosAdmin = () => rpc('admin_listar_pedidos');
 export async function listarCategoriasAdmin() {

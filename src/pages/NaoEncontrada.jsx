@@ -7,7 +7,7 @@ export default function NaoEncontrada() {
         <p className="eyebrow">Erro 404</p>
         <h1>Página não encontrada</h1>
         <p className="text-muted">O endereço pode ter mudado ou sido digitado incorretamente.</p>
-        <Link className="pill primary" to="/">Voltar para a Home</Link>
+        <Link className="pill primary" to="/">Voltar para o início</Link>
       </section>
     </div>
   );

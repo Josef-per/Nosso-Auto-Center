@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Check, LoaderCircle, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
 import { quantidadeDoProduto, useCarrinho } from '../carrinho/useCarrinho';
@@ -34,12 +35,12 @@ export default function AdicionarAoCarrinho({ produto, quantidade = 1, destaque 
   return (
     <div className="cart-add">
       <button
-        className={destaque ? 'pill primary' : 'pill'}
+        className={`${destaque ? 'pill primary' : 'pill'}${mensagem && !mensagem.erro ? ' added' : ''}`}
         type="button"
         disabled={!disponivel || carregando || Boolean(erro) || gravando}
         onClick={adicionar}
       >
-        {rotulo}
+        {adicionando ? <LoaderCircle className="loading-icon" size={16} aria-hidden="true" /> : mensagem && !mensagem.erro ? <Check size={16} aria-hidden="true" /> : <ShoppingCart size={16} aria-hidden="true" />}{mensagem && !mensagem.erro && disponivel && !adicionando ? 'Adicionar mais' : rotulo}
       </button>
       {mensagem?.erro && <p className="notice" role="alert">{mensagem.erro}</p>}
       {erro && produto.stock > 0 && (

@@ -7,6 +7,8 @@ import AdicionarAoCarrinho from '../components/AdicionarAoCarrinho';
 import CampoQuantidade from '../components/CampoQuantidade';
 import { formatarPreco } from '../lib/formatarPreco';
 import { buscarProduto } from '../services/produtoService';
+import { PackageCheck, Truck, Info } from 'lucide-react';
+import ProductReviews from '../components/ProductReviews';
 
 function Detalhes({ produto }) {
   const { itens, gravando } = useCarrinho();
@@ -27,7 +29,7 @@ function Detalhes({ produto }) {
           <p className="text-muted old-price"><del>{formatarPreco(produto.oldPrice)}</del></p>
         )}
         <p className="price">{formatarPreco(produto.price)}</p>
-        <p className="product-stock">
+        <p className="product-stock" data-available={produto.stock > 0}>
           {produto.stock > 0 ? `Estoque disponível: ${produto.stock}` : 'Sem estoque'}
           {noCarrinho > 0 && <span className="text-muted">{noCarrinho} no carrinho</span>}
         </p>
@@ -37,7 +39,7 @@ function Detalhes({ produto }) {
           )}
           <AdicionarAoCarrinho produto={produto} quantidade={Number(quantidade)} destaque />
         </div>
-        <div className="divider" />
+        <div className="purchase-notes"><p><PackageCheck size={18} aria-hidden="true" />Confira a aplicação e a compatibilidade da peça com seu veículo.</p><p><Truck size={18} aria-hidden="true" />Estimativa de frete por CEP no checkout.</p><p><Info size={18} aria-hidden="true" />Compra acadêmica. Pagamentos e entrega demonstrativos.</p></div><div className="divider" />
         <h2>Descrição</h2>
         <p className="text-muted product-description">{produto.description || 'Descrição indisponível.'}</p>
       </div>
@@ -88,6 +90,7 @@ function ConsultaProduto({ id }) {
         </div>
       )}
       {resultado?.produto && <Detalhes produto={resultado.produto} />}
+      {resultado?.produto && <ProductReviews produtoId={resultado.produto.id} />}
     </div>
   );
 }

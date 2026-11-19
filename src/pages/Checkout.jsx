@@ -96,6 +96,7 @@ function CheckoutConta({ usuarioId }) {
         <h1>Finalizar compra</h1>
         <p className="text-muted">Compra demonstrativa, sem processamento de pagamento real.</p>
       </div>
+      <ol className="checkout-steps" aria-label="Etapas da compra"><li><span>1</span>Carrinho</li><li aria-current="step"><span>2</span>Entrega e pagamento</li><li><span>3</span>Confirmação</li></ol>
       {backend !== 'pronto' && <div className="notice" role="status">
         {backend === 'carregando' ? 'Verificando disponibilidade do checkout…' : 'Checkout temporariamente indisponível. A configuração de frete e pagamento ainda precisa ser confirmada no servidor.'}
         {backend === 'indisponivel' && <button type="button" className="pill" onClick={() => { setBackend('carregando'); setChecagem((n) => n + 1); }}>Verificar novamente</button>}

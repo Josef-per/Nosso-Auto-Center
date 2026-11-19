@@ -1,4 +1,6 @@
+import SelectField from '../components/SelectField';
 import { useEffect, useRef, useState } from 'react';
+import { MapPin, UserRound } from 'lucide-react';
 import FormField from '../components/FormField';
 import PaymentOptions from '../components/PaymentOptions';
 import ShippingEstimate from '../components/ShippingEstimate';
@@ -43,13 +45,14 @@ export default function CheckoutForm({ onSubmit, erroCampo, enviando, bloqueado,
     }
   }
   return <section className="panel" aria-labelledby="titulo-endereco">
-    <h2 id="titulo-endereco">Identificação e entrega</h2>
+    <p className="eyebrow">DADOS PARA O PEDIDO</p><h2 id="titulo-endereco">Identificação e entrega</h2>
     <form className="checkout-form" onSubmit={onSubmit} noValidate>
       <fieldset disabled={enviando}>
+        <h3 className="form-section-title"><UserRound size={19} aria-hidden="true" />Identificação</h3>
         <FormField id="entrega-cpf" name="cpf" label="CPF" value={cpf} onChange={(e) => setCpf(mascararCpf(e.target.value))}
           inputMode="numeric" autoComplete="off" maxLength={14} required error={erroCampo?.campo === 'cpf' ? erroCampo.erro : undefined}
           hint="Conferimos apenas os dígitos verificadores. Isso não verifica identidade. O CPF não será armazenado no pedido." />
-        <div className="cep-search">
+        <h3 className="form-section-title"><MapPin size={19} aria-hidden="true" />Endereço de entrega</h3><div className="cep-search">
           <FormField id="entrega-cep" name="cep" label="CEP" value={endereco.cep} onChange={(e) => editar('cep', mascararCep(e.target.value))}
             inputMode="numeric" autoComplete="postal-code" maxLength={9} required onBlur={() => { if (apenasDigitos(endereco.cep).length === 8) buscar(); }}
             error={erroCampo?.campo === 'cep' ? erroCampo.erro : consulta.erro} />
@@ -62,11 +65,11 @@ export default function CheckoutForm({ onSubmit, erroCampo, enviando, bloqueado,
             className={nome === 'logradouro' || nome === 'complemento' ? 'checkout-wide' : ''}
             value={endereco[nome]} onChange={(e) => editar(nome, e.target.value)} required={!opcional} maxLength={200}
             error={erroCampo?.campo === nome ? erroCampo.erro : undefined} {...atributos} />)}
-          <div><label className="field" htmlFor="entrega-uf">UF</label><select id="entrega-uf" name="uf" className="forminput" value={endereco.uf}
+          <div><label className="field" htmlFor="entrega-uf">UF</label><SelectField id="entrega-uf" name="uf" className="forminput" value={endereco.uf}
             onChange={(e) => editar('uf', e.target.value)} required aria-invalid={erroCampo?.campo === 'uf' || undefined}
             aria-describedby={erroCampo?.campo === 'uf' ? 'erro-uf' : undefined}>
             <option value="">Selecione</option>{estados.map((uf) => <option value={uf} key={uf}>{uf}</option>)}
-          </select>{erroCampo?.campo === 'uf' && <p className="field-error" id="erro-uf" role="alert">{erroCampo.erro}</p>}</div>
+          </SelectField>{erroCampo?.campo === 'uf' && <p className="field-error" id="erro-uf" role="alert">{erroCampo.erro}</p>}</div>
         </div>
         <ShippingEstimate value={frete} />
         <PaymentOptions value={pagamento} onChange={onPagamento} />

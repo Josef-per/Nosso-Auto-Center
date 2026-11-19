@@ -1,60 +1,8 @@
-/* Tokens compartilhados: cores de ação e estados têm contraste nos dois temas. */
-:root {
-  color-scheme: light;
-  --bg: #f6f7f9;
-  --surface: #edf0f3;
-  --card: #ffffff;
-  --text: #17202b;
-  --muted: #566473;
-  --border: #d7dee5;
-  --accent: #f47828;
-  --accent2: #ff9c58;
-  --accent-soft: #fff0e6;
-  --accent-text: #ac430d;
-  --button: #b64a12;
-  --button-hover: #963b0a;
-  --button-text: #ffffff;
-  --notice-bg: #fff0e3;
-  --notice-text: #8a350d;
-  --notice-border: #d99b70;
-  --dark: #111820;
-  --dark-rgb: 17 24 32;
-  --inverse-surface: #17202b;
-  --inverse-card: #1b2632;
-  --inverse-text: #f5f7f8;
-  --inverse-muted: #b7c3cf;
-  --inverse-border: #344352;
-  --inverse-border-hover: #566878;
-  --image-bg: #edf0f3;
-  --shadow: 0 8px 24px rgb(20 29 38 / 6%);
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --motion: 180ms ease;
-}
-[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #111820;
-  --surface: #18232d;
-  --card: #1d2832;
-  --text: #f5f7f8;
-  --muted: #b2bfca;
-  --border: #3b4b59;
-  --accent-soft: #34251e;
-  --accent-text: #ff9c58;
-  --button: #f47828;
-  --button-hover: #ff9c58;
-  --button-text: #111820;
-  --notice-bg: #39291e;
-  --notice-text: #ffc49c;
-  --notice-border: #9f6238;
-  --shadow: 0 8px 24px rgb(0 0 0 / 12%);
-}
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 'Segoe UI Variable', 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.7 var(--font-body); -webkit-font-smoothing: antialiased; }
 h1, h2, h3, h4, p { margin-top: 0; }
-h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.035em; font-weight: 750; }
+h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.035em; font-weight: 700; font-family: var(--font-heading); }
 a { color: var(--accent-text); text-underline-offset: 4px; }
 a:hover { text-decoration-thickness: 2px; }
 button, input, select, textarea { font: inherit; }
@@ -168,7 +116,7 @@ img[data-loaded="false"] { background: #edf0f3; }
 .summary-line.total { border-top: 1px solid var(--border); color: var(--text); font-weight: 800; font-size: 19px; margin-top: 10px; }
 .field { display: block; font-weight: 700; font-size: 13px; margin: 16px 0 7px; }
 .auth-shell { display: grid; grid-template-columns: 1fr 1fr; min-height: 640px; border-radius: 20px; overflow: hidden; margin: 37px auto; background: var(--card); box-shadow: var(--shadow); border: 1px solid var(--border); }
-.auth-art { background: linear-gradient(0deg,#111820ed,#11182024),url('https://images.unsplash.com/photo-1486496572940-2bb2341fdbdf?w=1100&auto=format&fit=crop&q=85') center/cover; color: white; display: flex; flex-direction: column; justify-content: end; padding: 50px; }
+.auth-art { background: linear-gradient(0deg,#111820f5,#11182030),url('/images/empresa/fachada-real-768.jpg') center/cover; color: white; display: flex; flex-direction: column; justify-content: end; padding: 50px; }
 .auth-art .eyebrow { color: #ff9c58; }
 .auth-form { padding: 50px clamp(24px,5vw,70px); align-self: center; min-width: 0; }
 .auth-form h1 { font-size: 34px; margin: 0 0 12px; }

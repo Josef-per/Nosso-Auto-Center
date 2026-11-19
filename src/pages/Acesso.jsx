@@ -54,7 +54,7 @@ export default function Acesso({ cadastro = false }) {
       <div className="auth-shell">
         <div className="auth-art">
           <span className="eyebrow">Autopeças &amp; oficina</span>
-          <p>Nosso Auto Center</p>
+          <p>Seu próximo caminho<br />começa com a gente.</p><small>Acesse sua conta para organizar suas compras e acompanhar cada pedido.</small>
         </div>
         <section className="auth-form" aria-labelledby="titulo-acesso">
           <nav className="auth-switch" aria-label="Opções de acesso">
@@ -62,6 +62,7 @@ export default function Acesso({ cadastro = false }) {
             <NavLink to={caminhoAcesso('/cadastro', destino)}>Cadastro</NavLink>
           </nav>
           <h1 id="titulo-acesso">{cadastro ? 'Crie sua conta' : 'Entre na sua conta'}</h1>
+          <p className="text-muted">{cadastro ? 'Um só lugar para seus dados, peças e pedidos.' : 'Bom ter você por aqui. Vamos continuar?'}</p>
           {destino === '/checkout' && (
             <p className="text-muted">
               A compra usa o carrinho da sua conta. Os itens do carrinho de visitante ficam neste navegador.

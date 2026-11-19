@@ -7,9 +7,10 @@ import {
 import { useCatalogo } from '../catalogo/useCatalogo';
 import ProductGrid from '../components/ProductGrid';
 import CategoryCard from '../components/CategoryCard';
-import LoadingState from '../components/LoadingState';
+import ProductSkeleton from '../components/ProductSkeleton';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
+import { SobreEmpresa, GaleriaEmpresa, ConfiancaEmpresa } from '../components/EmpresaSections';
 
 const servicos = [
   { titulo: 'Pneus', descricao: 'Venda, troca e manutenção de pneus. O cuidado começa no contato com a estrada.', icone: CircleDot },
@@ -105,7 +106,7 @@ export default function Home() {
             </div>
             <Link to="/loja" className="subtlelink">Ver todos os produtos <ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
-          {loading ? <LoadingState /> : error ? <ErrorState message={error} onRetry={retry} />
+          {loading ? <ProductSkeleton count={4} /> : error ? <ErrorState message={error} onRetry={retry} />
             : products.length ? <ProductGrid products={products.slice(0, 4)} />
               : <EmptyState title="Nenhum produto disponível no momento" message="Volte em breve para conferir o catálogo." />}
         </section>
@@ -136,6 +137,9 @@ export default function Home() {
         </div>
       </section>
 
+      <SobreEmpresa />
+      <GaleriaEmpresa />
+      <ConfiancaEmpresa />
       <section className="container home-closing" aria-labelledby="titulo-proximo-caminho">
         <div>
           <p className="eyebrow">NOSSO AUTO CENTER</p>

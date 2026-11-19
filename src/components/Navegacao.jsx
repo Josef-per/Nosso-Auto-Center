@@ -21,6 +21,7 @@ export function LinksNavegacao({ onClick }) {
       <Link to="/#servicos" onClick={onClick} aria-current={emServicos ? 'location' : undefined}>
         Serviços
       </Link>
+      <NavLink to="/sobre" onClick={onClick}>Sobre nós</NavLink>
     </>
   );
 }

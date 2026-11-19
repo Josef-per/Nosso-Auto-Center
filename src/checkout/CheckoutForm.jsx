@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { MapPin, UserRound } from 'lucide-react';
 import FormField from '../components/FormField';
 import PaymentOptions from '../components/PaymentOptions';
 import ShippingEstimate from '../components/ShippingEstimate';
@@ -43,13 +44,14 @@ export default function CheckoutForm({ onSubmit, erroCampo, enviando, bloqueado,
     }
   }
   return <section className="panel" aria-labelledby="titulo-endereco">
-    <h2 id="titulo-endereco">Identificação e entrega</h2>
+    <p className="eyebrow">DADOS PARA O PEDIDO</p><h2 id="titulo-endereco">Identificação e entrega</h2>
     <form className="checkout-form" onSubmit={onSubmit} noValidate>
       <fieldset disabled={enviando}>
+        <h3 className="form-section-title"><UserRound size={19} aria-hidden="true" />Identificação</h3>
         <FormField id="entrega-cpf" name="cpf" label="CPF" value={cpf} onChange={(e) => setCpf(mascararCpf(e.target.value))}
           inputMode="numeric" autoComplete="off" maxLength={14} required error={erroCampo?.campo === 'cpf' ? erroCampo.erro : undefined}
           hint="Conferimos apenas os dígitos verificadores. Isso não verifica identidade. O CPF não será armazenado no pedido." />
-        <div className="cep-search">
+        <h3 className="form-section-title"><MapPin size={19} aria-hidden="true" />Endereço de entrega</h3><div className="cep-search">
           <FormField id="entrega-cep" name="cep" label="CEP" value={endereco.cep} onChange={(e) => editar('cep', mascararCep(e.target.value))}
             inputMode="numeric" autoComplete="postal-code" maxLength={9} required onBlur={() => { if (apenasDigitos(endereco.cep).length === 8) buscar(); }}
             error={erroCampo?.campo === 'cep' ? erroCampo.erro : consulta.erro} />

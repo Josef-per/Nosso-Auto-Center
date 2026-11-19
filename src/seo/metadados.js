@@ -1,6 +1,7 @@
 export const descricaoLoja = 'Catálogo de autopeças do Nosso Auto Center: consulte produtos, marcas e disponibilidade para cuidar do seu veículo. Projeto acadêmico com compras demonstrativas.';
 export function metadadosDaRota(pathname) {
   const rotas = {
+    '/sobre': { titulo: 'Nossa história | Nosso Auto Center', descricao: 'Conheça a história do Nosso Auto Center, oficina e autopeças em Franca desde 2018, e encontre os contatos da empresa.' },
     '/': { titulo: 'Nosso Auto Center | Autopeças e oficina', descricao: descricaoLoja },
     '/loja': { titulo: 'Loja de autopeças | Nosso Auto Center', descricao: 'Explore o catálogo de autopeças, filtre por categoria e consulte preços e estoque disponíveis no Nosso Auto Center.' },
   };

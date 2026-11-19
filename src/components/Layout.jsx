@@ -4,8 +4,9 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import LoadingState from './LoadingState';
+import RouteErrorBoundary from './RouteErrorBoundary';
 export default function Layout() {
-  const { pathname, hash, key } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
     const destino = document.getElementById(hash.slice(1));
@@ -16,17 +17,17 @@ export default function Layout() {
     }
     // Trocas de página começam no topo; somente as âncoras usam o scroll suave do CSS.
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  }, [pathname, hash, key]);
+  }, [pathname, hash]);
 
   return (
     <div className="site-layout">
       <RouteMetadata />
       <a className="site-skip" href="#conteudo">Ir para o conteúdo</a>
-      <Header key={pathname + hash + key} />
+      <Header key={pathname + hash} />
       <main id="conteudo" tabIndex={-1}>
-        <Suspense fallback={<LoadingState message="Carregando página…" />}>
+        <RouteErrorBoundary key={pathname}><Suspense fallback={<LoadingState message="Carregando página…" />}>
           <Outlet />
-        </Suspense>
+        </Suspense></RouteErrorBoundary>
       </main>
       <Footer />
     </div>

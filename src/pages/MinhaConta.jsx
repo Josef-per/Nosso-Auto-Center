@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, Package, UserRound } from 'lucide-react';
+import AdminEntry from '../auth/AdminEntry';
 import { useSessao } from '../auth/useSessao';
 import MeusPedidos from '../components/MeusPedidos';
 import { carregarPerfil, sair, salvarPerfil } from '../services/contaService';
@@ -108,6 +109,9 @@ function Perfil({ user }) {
 
 export default function MinhaConta() {
   const { user } = useSessao();
+  const { hash } = useLocation();
+  const pedidos = hash === '#meus-pedidos';
+  const nome = user.user_metadata?.nome?.trim().split(' ')[0] || 'cliente';
   const [saindo, setSaindo] = useState(false);
   const [erro, setErro] = useState('');
 
@@ -124,24 +128,26 @@ export default function MinhaConta() {
 
   return (
     <div className="container account-page">
-      <div className="page-heading">
-        <h1>Minha conta</h1>
+      <div className="account-heading">
+        <span className="account-avatar" aria-hidden="true">{nome[0].toLocaleUpperCase('pt-BR')}</span><div><p className="eyebrow">SEU ESPAÇO NO NOSSO AUTO CENTER</p><h1>Olá, {nome}.</h1><p>Seus dados e pedidos, sempre por perto.</p></div>
       </div>
       <div className="account-layout">
-        <div className="side-menu account-menu">
-          <Link className="account-link admin-entry" to="/admin">Área administrativa</Link>
+        <nav className="side-menu account-menu" aria-label="Minha conta">
+          <Link to="/minha-conta#meus-dados" aria-current={!pedidos ? 'location' : undefined}><UserRound size={17} aria-hidden="true" />Dados pessoais</Link>
+          <Link to="/minha-conta#meus-pedidos" aria-current={pedidos ? 'location' : undefined}><Package size={17} aria-hidden="true" />Meus pedidos</Link>
+          <AdminEntry key={user.id} usuarioId={user.id} />
           <button type="button" onClick={encerrarSessao} disabled={saindo}>
             <LogOut size={18} aria-hidden="true" />
             {saindo ? 'Saindo…' : 'Sair da conta'}
           </button>
           {erro && <p className="notice" role="alert">{erro}</p>}
-        </div>
+        </nav>
         <div className="account-content">
-          <section className="panel" aria-labelledby="titulo-perfil">
-            <h2 id="titulo-perfil">Meus dados</h2>
+          <section id="meus-dados" tabIndex={-1} hidden={pedidos} className="panel" aria-labelledby="titulo-perfil">
+            <p className="eyebrow">MINHA CONTA</p><h2 id="titulo-perfil">Dados pessoais</h2><p className="text-muted">Mantenha seu nome e telefone atualizados.</p>
             <Perfil key={user.id} user={user} />
           </section>
-          <MeusPedidos key={user.id} usuarioId={user.id} />
+          <div hidden={!pedidos}><MeusPedidos key={user.id} usuarioId={user.id} /></div>
         </div>
       </div>
     </div>

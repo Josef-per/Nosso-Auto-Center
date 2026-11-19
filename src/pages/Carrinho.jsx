@@ -1,4 +1,5 @@
 import ProductImage from '../components/ProductImage';
+import { ShoppingBag, Truck, ArrowRight } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
@@ -106,7 +107,7 @@ function ConteudoCarrinho({ visitante }) {
   return (
     <div className="container cart-page">
       <div className="page-heading">
-        <h1>Carrinho</h1>
+        <nav className="crumb" aria-label="Localização"><Link to="/loja">Loja</Link> / Carrinho</nav><p className="eyebrow">SUAS ESCOLHAS, EM UM SÓ LUGAR</p><h1>Seu carrinho.</h1>
         {visitante && !carregando && (
           <p className="text-muted">O carrinho de visitante fica neste navegador, separado do carrinho da conta.</p>
         )}
@@ -139,12 +140,13 @@ function ConteudoCarrinho({ visitante }) {
             <h2 id="cart-summary-title">Resumo do pedido</h2>
             <div className="summary-line"><span>Subtotal</span><span>{formatarPreco(subtotal)}</span></div>
             <div className="summary-line total"><span>Total</span><span>{formatarPreco(subtotal)}</span></div>
+            <p className="summary-note"><Truck size={17} aria-hidden="true" />Frete demonstrativo calculado por CEP na próxima etapa.</p>
             {itens.some((item) => !item.produto) && (
               <p className="text-muted">Itens que saíram do catálogo ficam fora do total.</p>
             )}
             <div className="checkout-actions">
               <button className="pill primary" type="button" disabled={gravando} onClick={() => navigate('/checkout')}>
-                Finalizar compra
+                Finalizar compra <ArrowRight size={17} aria-hidden="true" />
               </button>
               <Link className="account-link" to="/loja">Continuar comprando</Link>
             </div>
@@ -152,10 +154,10 @@ function ConteudoCarrinho({ visitante }) {
         </div>
       ) : (
         <section className="empty commerce-empty">
+          <ShoppingBag size={42} strokeWidth={1.3} aria-hidden="true" />
           <h2>Seu carrinho está vazio</h2>
           <div className="checkout-actions checkout-empty-actions">
-            <button className="pill primary" type="button" disabled>Finalizar compra</button>
-            <Link className="account-link" to="/loja">Explorar produtos</Link>
+            <Link className="pill primary" to="/loja">Explorar produtos <ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
         </section>
       ))}

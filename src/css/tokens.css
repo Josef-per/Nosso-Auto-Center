@@ -1,0 +1,63 @@
+/* Tokens compartilhados: cores de ação e estados têm contraste nos dois temas. */
+:root {
+  color-scheme: light;
+  --bg: #f6f7f9;
+  --surface: #edf0f3;
+  --card: #ffffff;
+  --text: #17202b;
+  --muted: #566473;
+  --border: #d7dee5;
+  --accent: #f47828;
+  --accent2: #ff9c58;
+  --accent-soft: #fff0e6;
+  --accent-text: #ac430d;
+  --button: #f47828;
+  --button-hover: #ff9c58;
+  --button-text: #111820;
+  --notice-bg: #fff0e3;
+  --notice-text: #8a350d;
+  --notice-border: #d99b70;
+  --dark: #111820;
+  --dark-rgb: 17 24 32;
+  --inverse-surface: #17202b;
+  --inverse-card: #1b2632;
+  --inverse-text: #f5f7f8;
+  --inverse-muted: #b7c3cf;
+  --inverse-border: #344352;
+  --inverse-border-hover: #566878;
+  --image-bg: #edf0f3;
+  --shadow: 0 8px 24px rgb(20 29 38 / 6%);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --motion: 180ms ease;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111820;
+  --surface: #18232d;
+  --card: #1d2832;
+  --text: #f5f7f8;
+  --muted: #b2bfca;
+  --border: #3b4b59;
+  --accent-soft: #34251e;
+  --accent-text: #ff9c58;
+  --button: #f47828;
+  --button-hover: #ff9c58;
+  --button-text: #111820;
+  --notice-bg: #39291e;
+  --notice-text: #ffc49c;
+  --notice-border: #9f6238;
+  --shadow: 0 8px 24px rgb(0 0 0 / 12%);
+}
+
+:root {
+  --font-body: 'Manrope', 'Segoe UI', sans-serif;
+  --font-heading: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 72px;
+  --shadow-hover: 0 16px 38px rgb(17 24 32 / 10%);
+  --success: #196444; --success-bg: #eaf7f0;
+  --danger: #a02b36; --danger-bg: #fff0f1;
+}
+[data-theme="dark"] { --success: #8bdfb4; --success-bg: #19392d; --danger: #ffb4bc; --danger-bg: #3b2229; --shadow-hover: 0 16px 38px rgb(0 0 0 / 20%); }

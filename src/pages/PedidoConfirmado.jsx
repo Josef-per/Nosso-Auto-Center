@@ -1,4 +1,5 @@
 import PaymentSummary from '../components/PaymentSummary';
+import { PackageCheck } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
 import ResumoPedido from '../components/ResumoPedido';
@@ -12,6 +13,7 @@ function DetalhesPedido({ usuarioId, id }) {
   return (
     <div className="container pedido-confirmado">
       <div className="page-heading">
+        <PackageCheck size={36} strokeWidth={1.5} aria-hidden="true" /><p className="eyebrow">SEU PRÓXIMO CAMINHO</p>
         <h1>{pedido ? 'Pedido registrado' : 'Detalhes do pedido'}</h1>
         {pedido && <p className="text-muted">Compra demonstrativa, sem processamento de pagamento real.</p>}
       </div>

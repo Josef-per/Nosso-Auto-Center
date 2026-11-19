@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Menu, ShoppingCart, UserRound, X } from 'lucide-react';
+import { MapPin, Menu, Phone, ShoppingCart, UserRound, X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useSessao } from '../auth/useSessao';
 import { useCarrinho } from '../carrinho/useCarrinho';
@@ -23,6 +23,7 @@ export default function Header() {
 
   return (
     <header className="header site-header" onKeyDown={tratarTecla}>
+      <div className="header-top"><div className="container"><span><MapPin size={13} aria-hidden="true" />Autopeças & oficina em Franca · SP</span><a href="tel:+551634328200"><Phone size={13} aria-hidden="true" />(16) 3432-8200</a></div></div>
       <div className="container header-inner">
         <Marca />
         <nav className="nav" aria-label="Navegação principal">

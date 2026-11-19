@@ -24,6 +24,28 @@ test('imagem: formatos reais, limite exato de 2 MB e recusa de SVG/disfarces', a
   for (const url of ['javascript:alert(1)', 'data:image/svg+xml,<svg/>', '//example.com/foto.png', 'http://example.com/foto.png']) assert.equal(urlImagemPermitida(url), false);
 });
 
+test('vitrine: proporção 4:3, fundos neutros, contain e badge sem cobrir a peça', async () => {
+  const [globalCss, redesignCss, homeCss, commerceCss, tokensCss, card] = await Promise.all([
+    readFile(new URL('../src/css/global.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/css/redesign.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/css/home.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/css/comercio.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/css/tokens.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/ProductCard.jsx', import.meta.url), 'utf8'),
+  ]);
+  assert.match(globalCss, /\.product-img\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3/);
+  assert.match(globalCss, /\.product-img img\s*\{[^}]*object-fit:\s*contain/);
+  assert.match(globalCss, /\.detail-photo img\s*\{[^}]*object-fit:\s*contain/);
+  assert.match(commerceCss, /\.product-detail \.detail-photo\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3/);
+  assert.match(tokensCss, /--image-bg:\s*#f8f9fa/);
+  assert.doesNotMatch(homeCss, /\.home-featured \.product-img\s*\{[^}]*aspect-ratio:/);
+  assert.doesNotMatch(homeCss, /\.home-featured \.product-img img\s*\{[^}]*padding:/);
+  assert.match(homeCss, /@media\s*\(max-width:\s*730px\)/);
+  assert.match(globalCss, /\.product-img\[data-has-badge="true"\] img\s*\{[^}]*padding-top:/);
+  assert.match(card, /data-has-badge=\{Boolean\(product\.badge\)\}/);
+  assert.match(redesignCss, /\.product:hover \.product-img img \{ transform: scale\(1\.015\); \}/);
+});
+
 test('Storage: admin obrigatório, caminhos únicos, MIME e falhas de envio', async (t) => {
   const server = await vite();
   try {
@@ -62,7 +84,7 @@ test('editor: preview local, erro, retry sem novo upload, vínculo por RPC e op�
   const dom = new JSDOM('<!doctype html><div id="app"></div>', { url: 'http://localhost' });
   let decodificar = true;
   const originals = new Map();
-  for (const [key, value] of Object.entries({ window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData, IS_REACT_ACT_ENVIRONMENT: true, createImageBitmap: async () => { if (!decodificar) throw new DOMException('corrompida', 'InvalidStateError'); return { close() {} }; } })) {
+  for (const [key, value] of Object.entries({ window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, HTMLFormElement: dom.window.HTMLFormElement, HTMLSelectElement: dom.window.HTMLSelectElement, DocumentFragment: dom.window.DocumentFragment, getComputedStyle: dom.window.getComputedStyle, Event: dom.window.Event, FormData: dom.window.FormData, IS_REACT_ACT_ENVIRONMENT: true, createImageBitmap: async () => { if (!decodificar) throw new DOMException('corrompida', 'InvalidStateError'); return { close() {} }; } })) {
     originals.set(key, Object.getOwnPropertyDescriptor(globalThis, key)); Object.defineProperty(globalThis, key, { configurable: true, writable: true, value });
   }
   dom.window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
@@ -125,6 +147,6 @@ test('migração: bucket limitado e guardas restritivas de escrita sem promover 
   const sql = await readFile(new URL('../supabase/migrations/003_storage_produtos.sql', import.meta.url), 'utf8');
   assert.match(sql, /2097152/); assert.match(sql, /ARRAY\['image\/jpeg', 'image\/png', 'image\/webp'\]/);
   for (const command of ['INSERT', 'UPDATE', 'DELETE']) assert.match(sql, new RegExp(`AS RESTRICTIVE FOR ${command} TO public`));
-  assert.match(sql, /FOR SELECT TO public/); assert.match(sql, /public.usuario_admin\(\)/);
+  assert.doesNotMatch(sql, /CREATE POLICY[^;]+FOR SELECT TO public/); assert.match(sql, /DROP POLICY IF EXISTS produtos_leitura_publica/); assert.match(sql, /public.usuario_admin\(\)/);
   assert.doesNotMatch(sql, /UPDATE public\.perfis|UPDATE public\.produtos|service_role/i);
 });

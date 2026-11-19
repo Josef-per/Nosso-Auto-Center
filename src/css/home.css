@@ -40,8 +40,7 @@
 .home-featured { padding-top: 56px; }
 .home-featured .products { align-items: stretch; }
 .home-featured .product { box-shadow: none; border-radius: var(--radius-md); transition: border-color var(--motion), transform var(--motion); }
-.home-featured .product-img { aspect-ratio: 1.25; background: var(--image-bg); border-bottom: 1px solid var(--border); }
-.home-featured .product-img img { padding: 24px; transition: transform var(--motion); }
+.home-featured .product-img { background: var(--image-bg); border-bottom: 1px solid var(--border); }
 .home-featured .tag { background: var(--inverse-surface); color: var(--inverse-text); border-radius: 5px; font-size: 10px; font-weight: 650; }
 .home-featured .product-body { padding: 22px; }
 .home-featured .product-body > small { color: var(--muted); font-size: 14px; letter-spacing: .08em; }
@@ -126,8 +125,6 @@
   .home-page .category-arrow { top: 20px; right: 15px; width: 17px; }
   .home-featured { padding-top: 44px; }
   .home-featured .product-body { padding: 15px; }
-  .home-featured .product-img { aspect-ratio: 1.1; }
-  .home-featured .product-img img { padding: 16px; }
   .home-featured .product .price { font-size: 24px; }
   .home-services-heading { grid-template-columns: 1fr; gap: 20px; margin-bottom: 28px; }
   .home-services-heading > p { justify-self: start; max-width: 480px;  }
@@ -143,7 +140,6 @@
   .home-service { padding: 24px; }
   .home-service-top { margin-bottom: 20px; }
   .home-featured .products { grid-template-columns: minmax(0, 1fr); }
-  .home-featured .product-img { aspect-ratio: 1.5; }
   .home-featured .product-body { padding: 22px; }
 }
 
@@ -160,6 +156,6 @@
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .home-featured .product:hover { transform: translateY(-2px); }
-  .home-featured .product:hover .product-img img { transform: scale(1.02); }
+  .home-featured .product:hover .product-img img { transform: scale(1.015); }
   .home-hero a.ghost:hover > svg { transform: translateY(2px); }
 }

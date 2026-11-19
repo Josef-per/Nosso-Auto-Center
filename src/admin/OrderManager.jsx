@@ -1,6 +1,8 @@
+import SelectField from '../components/SelectField';
 import PaymentSummary from '../components/PaymentSummary';
 import DeliveryDetails from './DeliveryDetails';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { dataSaoPaulo, statusPedidos } from './dashboardUtils';
 import { atualizarStatusAdmin } from '../services/adminService';
 import { formatarPreco } from '../lib/formatarPreco';
 import StatusPedido from '../components/StatusPedido';
@@ -11,19 +13,23 @@ export default function OrderManager({ pedidos, onChanged }) {
   const [mensagem, setMensagem] = useState('');
   const [filtro, setFiltro] = useState('todos');
   const [confirmacao, setConfirmacao] = useState(null);
+  const envio = useRef(false);
   async function atualizar(pedido, status) {
+    if (envio.current) return;
+    envio.current = true;
     setOcupado(pedido.id); setErro(''); setMensagem('');
     try { await atualizarStatusAdmin(pedido.id, status, pedido.status); setConfirmacao(null); setMensagem('Etapa de atendimento atualizada.'); onChanged(); }
     catch (error) { setErro(error.message); }
-    finally { setOcupado(null); }
+    finally { envio.current = false; setOcupado(null); }
   }
-  return <section className="panel" aria-labelledby="titulo-pedidos-admin"><h2 id="titulo-pedidos-admin">Pedidos recentes</h2>
-    <label className="field" htmlFor="filtro-pedidos">Etapa de atendimento</label><select id="filtro-pedidos" className="forminput" value={filtro} onChange={(e) => setFiltro(e.target.value)}><option value="todos">Todos os pedidos</option>{[...new Set(pedidos.map((p) => p.status))].map((status) => <option value={status} key={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>)}</select>
+  return <section className="panel" aria-labelledby="titulo-pedidos-admin"><p className="eyebrow">HISTÓRICO ADMINISTRATIVO</p><h2 id="titulo-pedidos-admin">Pedidos</h2>
+    <label className="field" htmlFor="filtro-pedidos">Etapa de atendimento</label><SelectField id="filtro-pedidos" className="forminput" value={filtro} onChange={(e) => setFiltro(e.target.value)}><option value="todos">Todos os pedidos</option>{statusPedidos.map((status) => <option value={status} key={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>)}</SelectField>
     <p className="text-muted">Até 100 pedidos mais recentes. Confirmar um pedido altera somente sua etapa de atendimento. Pagamentos permanecem simulados, sem processamento.</p>
     {erro && <p className="notice" role="alert">{erro}</p>}
     {mensagem && <p className="profile-success" role="status">{mensagem}</p>}
     {pedidos.filter((p) => filtro === 'todos' || p.status === filtro).length ? <ul className="admin-orders">{pedidos.filter((p) => filtro === 'todos' || p.status === filtro).map((pedido) => <li key={pedido.id}>
-      <div><strong className="pedido-id">{pedido.id}</strong><p className="text-muted">{new Date(pedido.criado_em).toLocaleString('pt-BR')} · {formatarPreco(Number(pedido.total))}</p><span>Atendimento: <StatusPedido status={pedido.status} /></span>
+      <div><strong className="pedido-id">{pedido.id}</strong><p className="text-muted">{dataSaoPaulo(pedido.criado_em)} (São Paulo) · {formatarPreco(Number(pedido.total))}</p><span>Atendimento: <StatusPedido status={pedido.status} /></span>
+        <p className="text-muted">Produtos: {pedido.subtotal_produtos == null ? 'Não registrado' : formatarPreco(Number(pedido.subtotal_produtos))} · Frete: {pedido.frete == null ? 'Não registrado' : formatarPreco(Number(pedido.frete))}</p>
         <PaymentSummary method={pedido.metodo_pagamento} status={pedido.status_pagamento} />
         <DeliveryDetails entrega={pedido.entrega} />
         <details><summary>Consultar itens</summary><ul className="pedido-linhas">{(pedido.itens ?? []).map((item) => <li key={item.id}><span>{item.quantidade} × {item.nome_produto}</span><span>{formatarPreco(Number(item.subtotal))}</span></li>)}</ul></details>

@@ -1,3 +1,4 @@
+import SelectField from '../components/SelectField';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, Cog, X } from 'lucide-react';
@@ -53,9 +54,9 @@ export default function Loja() {
       <section className="catalog-results" aria-label="Catálogo">
         <div className="catalog-top">
           <span className="text-muted" role="status">{loading ? 'Consultando catálogo…' : error ? 'Catálogo indisponível' : `${filteredProducts.length} ${filteredProducts.length === 1 ? 'produto encontrado' : 'produtos encontrados'}`}</span>
-          <label className="sort-label">Ordenar por<select value={sort} onChange={(event) => setSort(event.target.value)}>
+          <label className="sort-label">Ordenar por<SelectField aria-label="Ordenar por" value={sort} onChange={(event) => setSort(event.target.value)}>
             <option value="featured">Mais relevantes</option><option value="low">Menor preço</option><option value="high">Maior preço</option>
-          </select></label>
+          </SelectField></label>
         </div>
         {chips.length > 0 && <div className="filter-chips" aria-label="Filtros ativos">{chips.map((chip) => <button className="filter-chip" key={chip.label} type="button" onClick={chip.clear} aria-label={`Remover filtro ${chip.label}`}>{chip.label}<X size={13} aria-hidden="true" /></button>)}<button className="filter-clear" type="button" onClick={clearFilters}>Limpar tudo</button></div>}
         {loading ? <ProductSkeleton /> : error ? <ErrorState message={error} onRetry={retry} />

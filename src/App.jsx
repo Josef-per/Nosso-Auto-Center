@@ -17,6 +17,8 @@ const Loja = lazy(() => import('./pages/Loja'));
 const PedidoConfirmado = lazy(() => import('./pages/PedidoConfirmado'));
 const Produto = lazy(() => import('./pages/Produto'));
 const Sobre = lazy(() => import('./pages/Sobre'));
+const EsqueciSenha = lazy(() => import('./pages/EsqueciSenha'));
+const RedefinirSenha = lazy(() => import('./pages/RedefinirSenha'));
 
 export default function App() {
   return (
@@ -29,6 +31,8 @@ export default function App() {
             <Route path="sobre" element={<Sobre />} />
             <Route path="produto/:id" element={<Produto />} />
             <Route path="carrinho" element={<Carrinho />} />
+            <Route path="esqueci-senha" element={<EsqueciSenha />} />
+            <Route path="redefinir-senha" element={<RedefinirSenha />} />
             <Route element={<RotaVisitante />}>
               <Route path="login" element={<Acesso key="login" />} />
               <Route path="cadastro" element={<Acesso key="cadastro" cadastro />} />

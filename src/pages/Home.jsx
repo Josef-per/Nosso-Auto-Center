@@ -45,17 +45,16 @@ export default function Home() {
   return (
     <div className="home-page">
       <section className="home-hero" aria-labelledby="titulo-home">
-        <picture className="home-hero-photo">
-          <source media="(max-width: 730px)" srcSet="/images/empresa/fachada-real-768.jpg" />
+        <div className="home-hero-photo">
           <img
-            src="/images/empresa/fachada-real-1440.jpg"
-            alt="Fachada da oficina Nosso Auto Center"
+            src="/images/empresa/servicos.png"
+            alt="Lamborghini no banner do Nosso Auto Center"
             width="1440"
             height="522"
             fetchPriority="high"
             decoding="async"
           />
-        </picture>
+        </div>
         <div className="container home-hero-inner">
           <div className="home-hero-content">
             <p className="eyebrow"><span aria-hidden="true" />AUTOPEÇAS &amp; SERVIÇOS AUTOMOTIVOS</p>

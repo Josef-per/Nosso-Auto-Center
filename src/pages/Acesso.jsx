@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import PasswordField from '../components/PasswordField';
+import PasswordStrength from '../components/PasswordStrength';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { caminhoAcesso, destinoAposAcesso } from '../auth/destinoAcesso';
 import { cadastrar, entrar } from '../services/contaService';
+import { validarNovaSenha } from '../lib/segurancaConta';
 
 const mensagens = {
   email_not_confirmed: 'Confirme seu e-mail antes de entrar.',
@@ -19,6 +22,7 @@ export default function Acesso({ cadastro = false }) {
   const [enviando, setEnviando] = useState(false);
   const [emailEnviado, setEmailEnviado] = useState('');
   const [erro, setErro] = useState('');
+  const [senhaCadastro, setSenhaCadastro] = useState('');
 
   async function enviar(event) {
     event.preventDefault();
@@ -31,6 +35,10 @@ export default function Acesso({ cadastro = false }) {
     if (cadastro && !nome) {
       setErro('Informe seu nome.');
       return;
+    }
+    if (cadastro) {
+      const validacaoSenha = validarNovaSenha(senha);
+      if (validacaoSenha) { setErro(validacaoSenha); return; }
     }
 
     setEnviando(true);
@@ -50,7 +58,7 @@ export default function Acesso({ cadastro = false }) {
   }
 
   return (
-    <div className="container">
+    <div className="container auth-page">
       <div className="auth-shell">
         <div className="auth-art">
           <span className="eyebrow">Autopeças &amp; oficina</span>
@@ -87,17 +95,19 @@ export default function Acesso({ cadastro = false }) {
                 <label className="field" htmlFor="acesso-email">E-mail</label>
                 <input id="acesso-email" className="forminput" name="email" type="email" autoComplete="email" required />
                 <label className="field" htmlFor="acesso-senha">Senha</label>
-                <input
+                <PasswordField
                   id="acesso-senha"
                   className="forminput"
                   name="senha"
-                  type="password"
                   autoComplete={cadastro ? 'new-password' : 'current-password'}
-                  minLength={cadastro ? 6 : undefined}
-                  aria-describedby={cadastro ? 'senha-requisitos' : undefined}
+                  minLength={cadastro ? 8 : undefined}
+                  value={cadastro ? senhaCadastro : undefined}
+                  onChange={cadastro ? (event) => setSenhaCadastro(event.target.value) : undefined}
+                  aria-describedby={cadastro ? 'senha-requisitos senha-forca-cadastro' : undefined}
                   required
                 />
-                {cadastro && <small id="senha-requisitos" className="text-muted">Use pelo menos 6 caracteres.</small>}
+                {cadastro && <><small id="senha-requisitos" className="text-muted">Use pelo menos 8 caracteres. Frases-senha longas também funcionam. A força é avaliada localmente; o Supabase Auth aplica a política do servidor.</small><PasswordStrength password={senhaCadastro} id="senha-forca-cadastro" /></>}
+                {!cadastro && <Link className="forgot-password-link" to="/esqueci-senha">Esqueceu sua senha?</Link>}
                 {erro && <p className="notice" role="alert">{erro}</p>}
                 <button className="pill primary" type="submit">
                   {cadastro ? (enviando ? 'Criando conta…' : 'Criar conta') : (enviando ? 'Entrando…' : 'Entrar')}

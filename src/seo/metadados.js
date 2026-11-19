@@ -7,7 +7,7 @@ export function metadadosDaRota(pathname) {
   };
   if (rotas[pathname]) return { ...rotas[pathname], indexavel: true };
   if (/^\/produto\/[1-9]\d*$/.test(pathname)) return { titulo: 'Produto | Nosso Auto Center', descricao: 'Consulte informações, preço e disponibilidade desta autopeça no Nosso Auto Center.', indexavel: true };
-  const privadas = { '/admin': 'Administração', '/login': 'Entrar', '/cadastro': 'Criar conta', '/checkout': 'Checkout demonstrativo', '/carrinho': 'Carrinho', '/minha-conta': 'Minha conta' };
+  const privadas = { '/esqueci-senha': 'Recuperar acesso', '/redefinir-senha': 'Redefinir senha', '/admin': 'Administração', '/login': 'Entrar', '/cadastro': 'Criar conta', '/checkout': 'Checkout demonstrativo', '/carrinho': 'Carrinho', '/minha-conta': 'Minha conta' };
   return { titulo: (privadas[pathname] || (pathname.startsWith('/pedido-confirmado/') ? 'Detalhes do pedido' : 'Página não encontrada')) + ' | Nosso Auto Center', descricao: descricaoLoja, indexavel: false };
 }
 export function aplicarMetadados({ titulo, descricao, indexavel }) {

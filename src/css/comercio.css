@@ -53,12 +53,11 @@
 
 .product-detail .detail-photo {
   height: auto;
-  aspect-ratio: 1;
-  max-height: 500px;
+  aspect-ratio: 4 / 3;
 }
 
 .product-detail .detail-photo img {
-  padding: 16px;
+  padding: clamp(16px, 4%, 32px);
   object-fit: contain;
 }
 

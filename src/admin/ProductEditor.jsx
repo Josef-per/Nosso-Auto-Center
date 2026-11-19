@@ -1,3 +1,4 @@
+import SelectField from '../components/SelectField';
 import { useRef, useState } from 'react';
 import Modal from '../components/Modal';
 import FormField from '../components/FormField';
@@ -61,7 +62,7 @@ export default function ProductEditor({ produto, categorias, onSaved, onCancel }
         <FormField id="produto-nome" name="nome" label="Nome" defaultValue={produto?.nome ?? ''} required maxLength={200} />
         <FormField id="produto-slug" name="slug" label="Identificador (slug)" defaultValue={produto?.slug ?? ''} required maxLength={150} pattern="[a-z0-9]+(-[a-z0-9]+)*" hint="Use letras minúsculas, números e hífens." />
         <FormField id="produto-marca" name="marca" label="Marca" defaultValue={produto?.marca ?? ''} maxLength={100} />
-        <div><label className="field" htmlFor="produto-categoria">Categoria</label><select className="forminput" id="produto-categoria" name="categoria_id" required defaultValue={produto?.categoria_id ?? ''}><option value="">Selecione</option>{categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
+        <div><label className="field" htmlFor="produto-categoria">Categoria</label><SelectField className="forminput" id="produto-categoria" name="categoria_id" required defaultValue={produto?.categoria_id ?? ''}><option value="">Selecione</option>{categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}</SelectField></div>
         <FormField id="produto-preco" name="preco" label="Preço (R$)" type="number" min="0" max="99999999.99" step="0.01" required defaultValue={produto?.preco ?? ''} />
         <FormField id="produto-preco-antigo" name="preco_antigo" label="Preço anterior (opcional)" type="number" min="0" max="99999999.99" step="0.01" defaultValue={produto?.preco_antigo ?? ''} />
         <FormField id="produto-estoque" name="estoque" label="Estoque" type="number" min="0" max="2147483647" step="1" required defaultValue={produto?.estoque ?? 0} />

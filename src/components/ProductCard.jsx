@@ -4,7 +4,7 @@ import ProductImage from './ProductImage';
 import { formatarPreco } from '../lib/formatarPreco';
 export default function ProductCard({ product }) {
   return <article className="product" data-available={product.stock > 0}>
-    <Link className="product-img" to={`/produto/${product.id}`} tabIndex={-1} aria-hidden="true">
+    <Link className="product-img" data-has-badge={Boolean(product.badge)} to={`/produto/${product.id}`} tabIndex={-1} aria-hidden="true">
       <ProductImage src={product.image} alt="" />
       {product.badge && <span className="tag">{product.badge}</span>}
     </Link>

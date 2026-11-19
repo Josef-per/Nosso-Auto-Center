@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { LogOut, Package, UserRound } from 'lucide-react';
+import { LockKeyhole, LogOut, Package, UserRound } from 'lucide-react';
+import AccountSecurity from '../components/AccountSecurity';
 import AdminEntry from '../auth/AdminEntry';
 import { useSessao } from '../auth/useSessao';
 import MeusPedidos from '../components/MeusPedidos';
@@ -111,6 +112,7 @@ export default function MinhaConta() {
   const { user } = useSessao();
   const { hash } = useLocation();
   const pedidos = hash === '#meus-pedidos';
+  const seguranca = hash === '#seguranca';
   const nome = user.user_metadata?.nome?.trim().split(' ')[0] || 'cliente';
   const [saindo, setSaindo] = useState(false);
   const [erro, setErro] = useState('');
@@ -133,8 +135,9 @@ export default function MinhaConta() {
       </div>
       <div className="account-layout">
         <nav className="side-menu account-menu" aria-label="Minha conta">
-          <Link to="/minha-conta#meus-dados" aria-current={!pedidos ? 'location' : undefined}><UserRound size={17} aria-hidden="true" />Dados pessoais</Link>
+          <Link to="/minha-conta#meus-dados" aria-current={!pedidos && !seguranca ? 'location' : undefined}><UserRound size={17} aria-hidden="true" />Dados pessoais</Link>
           <Link to="/minha-conta#meus-pedidos" aria-current={pedidos ? 'location' : undefined}><Package size={17} aria-hidden="true" />Meus pedidos</Link>
+          <Link to="/minha-conta#seguranca" aria-current={seguranca ? 'location' : undefined}><LockKeyhole size={17} aria-hidden="true" />Segurança da conta</Link>
           <AdminEntry key={user.id} usuarioId={user.id} />
           <button type="button" onClick={encerrarSessao} disabled={saindo}>
             <LogOut size={18} aria-hidden="true" />
@@ -143,10 +146,14 @@ export default function MinhaConta() {
           {erro && <p className="notice" role="alert">{erro}</p>}
         </nav>
         <div className="account-content">
-          <section id="meus-dados" tabIndex={-1} hidden={pedidos} className="panel" aria-labelledby="titulo-perfil">
+          <section id="meus-dados" tabIndex={-1} hidden={pedidos || seguranca} className="panel" aria-labelledby="titulo-perfil">
             <p className="eyebrow">MINHA CONTA</p><h2 id="titulo-perfil">Dados pessoais</h2><p className="text-muted">Mantenha seu nome e telefone atualizados.</p>
             <Perfil key={user.id} user={user} />
           </section>
+          {seguranca && <section id="seguranca" className="panel" aria-labelledby="titulo-seguranca">
+            <p className="eyebrow">MINHA CONTA</p><h2 id="titulo-seguranca">Segurança da conta</h2>
+            <AccountSecurity key={user.id} emailAtual={user.email ?? ''} />
+          </section>}
           <div hidden={!pedidos}><MeusPedidos key={user.id} usuarioId={user.id} /></div>
         </div>
       </div>

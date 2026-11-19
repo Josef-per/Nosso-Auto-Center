@@ -25,7 +25,8 @@
   --inverse-muted: #b7c3cf;
   --inverse-border: #344352;
   --inverse-border-hover: #566878;
-  --image-bg: #edf0f3;
+  /* Palco claro constante para fotografias de peças nos temas claro e escuro. */
+  --image-bg: #f8f9fa;
   --shadow: 0 8px 24px rgb(20 29 38 / 6%);
   --radius-sm: 8px;
   --radius-md: 14px;

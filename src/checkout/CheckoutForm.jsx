@@ -1,3 +1,4 @@
+import SelectField from '../components/SelectField';
 import { useEffect, useRef, useState } from 'react';
 import { MapPin, UserRound } from 'lucide-react';
 import FormField from '../components/FormField';
@@ -64,11 +65,11 @@ export default function CheckoutForm({ onSubmit, erroCampo, enviando, bloqueado,
             className={nome === 'logradouro' || nome === 'complemento' ? 'checkout-wide' : ''}
             value={endereco[nome]} onChange={(e) => editar(nome, e.target.value)} required={!opcional} maxLength={200}
             error={erroCampo?.campo === nome ? erroCampo.erro : undefined} {...atributos} />)}
-          <div><label className="field" htmlFor="entrega-uf">UF</label><select id="entrega-uf" name="uf" className="forminput" value={endereco.uf}
+          <div><label className="field" htmlFor="entrega-uf">UF</label><SelectField id="entrega-uf" name="uf" className="forminput" value={endereco.uf}
             onChange={(e) => editar('uf', e.target.value)} required aria-invalid={erroCampo?.campo === 'uf' || undefined}
             aria-describedby={erroCampo?.campo === 'uf' ? 'erro-uf' : undefined}>
             <option value="">Selecione</option>{estados.map((uf) => <option value={uf} key={uf}>{uf}</option>)}
-          </select>{erroCampo?.campo === 'uf' && <p className="field-error" id="erro-uf" role="alert">{erroCampo.erro}</p>}</div>
+          </SelectField>{erroCampo?.campo === 'uf' && <p className="field-error" id="erro-uf" role="alert">{erroCampo.erro}</p>}</div>
         </div>
         <ShippingEstimate value={frete} />
         <PaymentOptions value={pagamento} onChange={onPagamento} />

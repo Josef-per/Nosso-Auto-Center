@@ -26,7 +26,7 @@
   border-color: #b64a12;
 }
 
-.checkout-form button {
+.checkout-form > fieldset > button[type="submit"] {
   margin-top: 22px;
 }
 
